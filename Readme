@@ -1,0 +1,30 @@
+# SDFVI–Proxy Explorer: Dual Pilot Architecture & Deployment
+
+## Overview
+The **SDFVI–Proxy Explorer (Dual Pilot)** is a spatial digital twin and open-source screening framework designed to evaluate disability-inclusive and gender-responsive climate vulnerability at the sub-district level. Originally conceptualized to bridge the gap between macro-level climate indexes and local administrative needs, this repository contains the complete codebase, data pipelines, and spatial projections for two distinct regional pilots in Indonesia: **Gunungkidul** (DIY) and **Solok** (West Sumatra).
+
+---
+
+## Architecture & Methodology
+Adapted from the global **DICLIV** (Disability-Inclusive Climate Vulnerability Index) framework, the system operates on a four-dimensional structural design that ensures vulnerability metrics cannot be masked by ableist or gender-blind aggregation:
+
+* **$D_1$ (Social Sensitivity & Disability/Gender):** Captures marginalized demographics. In Gunungkidul, this is operationalized via administrative social service data (*Dinsos*) tracking **Children with Disabilities (ADK) and neglected older persons per 1,000 population**. In Solok, it incorporates an **intersectional gender-age-education profile** (women aged 60+ without formal education per 1,000 females).
+* **$D_2$ (Climate Hazard):** Incorporates satellite-derived meteorological drought indicators using **CHIRPS precipitation deficit data** processed via Google Earth Engine.
+* **$D_3$ (Asset & Food Exposure):** Evaluates agricultural production bases relative to population, tracking drought-resilient *palawija* (maize and cassava) in Gunungkidul versus irrigated wetland rice (*sawah*) in Solok.
+* **$D_4$ (Adaptive Capacity & Governance):** Integrates localized institutional contexts, including irrigation infrastructure typologies, road isolation indexes, and gender wage disparities.
+
+---
+
+## Repository Structure
+* `index.html` / App Core: Interactive dual-pilot web interface featuring SVG-projected choropleth maps, layer toggles, and accessibility-compliant color-blind palettes.
+* `data/gunungkidul.csv`: Sub-district administrative boundaries and composite index weights across 18 *kapanewon*.
+* `data/solok.csv`: Sub-district administrative boundaries and composite index weights across 14 *kecamatan*.
+* `scripts/`: Data normalization pipelines, biochar water-holding capacity (WHC) simulation curves, and sensitivity analysis models.
+
+Sashanti, P. D. (2026). Spatial Disability-Inclusive and Gender-Responsive Climate Vulnerability Index (SDFVI–Proxy): Dual Pilot Documentation.
+---
+
+## Quick Start & Usage
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/purbaningsihpuri1-del/SDFVIProxyExplorer.git](https://github.com/purbaningsihpuri1-del/SDFVIProxyExplorer.git)
