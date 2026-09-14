@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { 
   Map as MapIcon, 
   Info, 
@@ -19,14 +19,16 @@ import {
   Compass,
   Droplets,
   Wheat,
-  Users
+  Users,
+  Upload
 } from 'lucide-react';
 import { KapanewonData, SolokKecamatanData, ColorTheme, PriorityCategory, PilotRegion } from '../types';
 import { GUNUNGKIDUL_OFFICIAL_GEOJSON } from '../data/sampleGunungkidulGeoJson';
 import { SOLOK_OFFICIAL_GEOJSON } from '../data/sampleSolokGeoJson';
 import { PUBLISHED_SOLOK_DATA } from '../data/solokBaselineData';
 import { getCategoryHexColor, getCategoryBadgeClasses } from '../utils/calculations';
-import thematicMapImg from '../assets/images/gunungkidul_thematic_map.jpg';
+import gkThematicMapImg from '../assets/images/gunungkidul_thematic_map.jpg';
+import solokThematicMapImg from '../assets/images/solok_thematic_map.jpg';
 
 interface MapSectionProps {
   data: KapanewonData[];
@@ -58,6 +60,24 @@ const GK_HOTSPOTS = [
   { name: 'Nglipar', leftPct: 54.5, topPct: 28.0 },
 ];
 
+// Spatial Hotspot Coordinates for Solok Thematic Map (Calibrated to SUT2026 GIS Layout)
+const SOLOK_HOTSPOTS = [
+  { name: 'X Koto Diatas', leftPct: 21.0, topPct: 14.5 },
+  { name: 'Junjung Sirih', leftPct: 11.5, topPct: 22.0 },
+  { name: 'X Koto Singkarak', leftPct: 18.0, topPct: 22.5 },
+  { name: 'Kubung', leftPct: 22.5, topPct: 34.0 },
+  { name: 'Ix Koto Sungai Lasi', leftPct: 30.0, topPct: 33.5 },
+  { name: 'Bukit Sundi', leftPct: 26.0, topPct: 46.0 },
+  { name: 'Payung Sekaki', leftPct: 33.0, topPct: 48.0 },
+  { name: 'Gunung Talang', leftPct: 19.5, topPct: 54.0 },
+  { name: 'Lembang Jaya', leftPct: 27.5, topPct: 56.5 },
+  { name: 'Tigo Lurah', leftPct: 50.0, topPct: 62.0 },
+  { name: 'Danau Kembar', leftPct: 27.0, topPct: 66.0 },
+  { name: 'Lembah Gumanti', leftPct: 33.0, topPct: 74.0 },
+  { name: 'Hiliran Gumanti', leftPct: 41.5, topPct: 76.5 },
+  { name: 'Pantai Cermin', leftPct: 39.0, topPct: 88.0 },
+];
+
 export const MapSection: React.FC<MapSectionProps> = ({
   data,
   colorTheme,
@@ -68,7 +88,7 @@ export const MapSection: React.FC<MapSectionProps> = ({
   const isGunungkidul = currentPilot === 'gunungkidul';
 
   // View modes
-  const [mapLayerMode, setMapLayerMode] = useState<'satellite' | 'vector'>(isGunungkidul ? 'satellite' : 'vector');
+  const [mapLayerMode, setMapLayerMode] = useState<'satellite' | 'vector'>('satellite');
   const [solokMetricLayer, setSolokMetricLayer] = useState<'sdfvi' | 'chirps' | 'sawah' | 'gender'>('sdfvi');
   const [viewMode, setViewMode] = useState<'map' | 'table'>('map');
   
@@ -79,8 +99,48 @@ export const MapSection: React.FC<MapSectionProps> = ({
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  // Custom User Uploaded Solok Thematic Map (SUT 2026)
+  const [customSolokMapImg, setCustomSolokMapImg] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem('sdfvi_custom_solok_map_v1') || null;
+    } catch {
+      return null;
+    }
+  });
+  const solokFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSolokImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const res = evt.target?.result as string;
+      if (res) {
+        setCustomSolokMapImg(res);
+        try {
+          localStorage.setItem('sdfvi_custom_solok_map_v1', res);
+        } catch (err) {
+          console.warn('Storage quota warning, keeping in active session state', err);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleResetSolokImage = () => {
+    setCustomSolokMapImg(null);
+    try {
+      localStorage.removeItem('sdfvi_custom_solok_map_v1');
+    } catch {}
+  };
   
   const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Clear hover state when switching pilots
+  useEffect(() => {
+    setHoveredUnit(null);
+  }, [currentPilot]);
 
   // Active GeoJSON & Data map
   const activeGeoJson = isGunungkidul ? GUNUNGKIDUL_OFFICIAL_GEOJSON : SOLOK_OFFICIAL_GEOJSON;
@@ -203,38 +263,38 @@ export const MapSection: React.FC<MapSectionProps> = ({
   return (
     <div className="space-y-6" id="map-section-container">
       {/* Top Map Controls Header */}
-      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-4 sm:p-5 shadow-xs">
+      <div className="bg-white dark:bg-[#1E293B] border-2 border-black/[0.08] dark:border-white/[0.12] rounded-2xl p-4 sm:p-5 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           
           <div>
-            <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+            <div className="flex items-center gap-2.5">
+              <span className="p-2 rounded-xl bg-[#15803D]/20 dark:bg-[#15803D]/30 text-[#14532D] dark:text-[#4ADE80] border border-[#15803D]/30">
                 <MapIcon className="w-5 h-5" />
               </span>
-              <h2 className="text-base sm:text-lg font-bold text-neutral-900 dark:text-white">
+              <h2 className="text-lg sm:text-xl font-extrabold text-[#0F172A] dark:text-white tracking-tight">
                 {isGunungkidul 
                   ? 'Peta Spasial Georeferensi Kapanewon Gunungkidul' 
                   : 'Peta Spasial Tematik Kecamatan Kabupaten Solok'}
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+            <p className="text-xs sm:text-sm text-[#334155] dark:text-[#CBD5E1] mt-1.5 font-medium leading-relaxed">
               {isGunungkidul
                 ? 'Visualisasi spasial 18 unit poligon administratif karst Gunungkidul dengan citra satelit dan pin hotspot.'
-                : 'Visualisasi 14 kecamatan di lembah Bukit Barisan dengan data curah hujan satelit CHIRPS kemarau 2023 dan sentra padi sawah.'}
+                : 'Visualisasi spasial 14 kecamatan Kabupaten Solok dengan peta citra satelit tematik, data curah hujan CHIRPS kemarau 2023, dan sentra padi sawah.'}
             </p>
           </div>
 
           {/* Pilot Switcher & View Mode Toolbar */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             
             {/* Quick Pilot Switcher */}
             {onSwitchPilot && (
-              <div className="flex items-center bg-neutral-100 dark:bg-neutral-700 p-1 rounded-lg text-xs font-semibold">
+              <div className="flex items-center bg-[#F1F5F9] dark:bg-[#0F172A] p-1 rounded-xl border border-black/10 dark:border-white/10 text-xs sm:text-sm font-bold">
                 <button
                   id="map-btn-gk"
                   onClick={() => onSwitchPilot('gunungkidul')}
-                  className={`px-2.5 py-1 rounded transition-colors ${
-                    isGunungkidul ? 'bg-emerald-600 text-white shadow-xs' : 'text-neutral-600 dark:text-neutral-300'
+                  className={`px-3 py-1.5 rounded-lg transition-colors ${
+                    isGunungkidul ? 'bg-[#15803D] text-white shadow-xs' : 'text-[#334155] dark:text-[#CBD5E1] hover:text-black dark:hover:text-white'
                   }`}
                 >
                   Gunungkidul
@@ -242,8 +302,8 @@ export const MapSection: React.FC<MapSectionProps> = ({
                 <button
                   id="map-btn-solok"
                   onClick={() => onSwitchPilot('solok')}
-                  className={`px-2.5 py-1 rounded transition-colors ${
-                    !isGunungkidul ? 'bg-blue-600 text-white shadow-xs' : 'text-neutral-600 dark:text-neutral-300'
+                  className={`px-3 py-1.5 rounded-lg transition-colors ${
+                    !isGunungkidul ? 'bg-[#0055D4] text-white shadow-xs' : 'text-[#334155] dark:text-[#CBD5E1] hover:text-black dark:hover:text-white'
                   }`}
                 >
                   Solok
@@ -251,44 +311,45 @@ export const MapSection: React.FC<MapSectionProps> = ({
               </div>
             )}
 
-            {/* Layer Mode: Satellite vs Vector (Gunungkidul) or Metric Layers (Solok) */}
-            {isGunungkidul ? (
-              <div className="flex items-center bg-neutral-100 dark:bg-neutral-700 p-1 rounded-lg text-xs font-medium">
-                <button
-                  id="btn-layer-satellite"
-                  onClick={() => setMapLayerMode('satellite')}
-                  className={`px-3 py-1 rounded flex items-center gap-1.5 transition-colors ${
-                    mapLayerMode === 'satellite'
-                      ? 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white font-semibold shadow-xs'
-                      : 'text-neutral-600 dark:text-neutral-300'
-                  }`}
-                >
-                  <Satellite className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Citra Satelit</span>
-                </button>
-                <button
-                  id="btn-layer-vector"
-                  onClick={() => setMapLayerMode('vector')}
-                  className={`px-3 py-1 rounded flex items-center gap-1.5 transition-colors ${
-                    mapLayerMode === 'vector'
-                      ? 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white font-semibold shadow-xs'
-                      : 'text-neutral-600 dark:text-neutral-300'
-                  }`}
-                >
-                  <Layers className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Vektor SVG</span>
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center bg-neutral-100 dark:bg-neutral-700 p-1 rounded-lg text-xs font-medium overflow-x-auto">
-                <span className="text-[11px] text-neutral-500 px-1 font-semibold">Layer:</span>
+            {/* Layer Mode: Satellite/Thematic Image vs Vector SVG (Available for both Gunungkidul & Solok) */}
+            <div className="flex items-center bg-[#F1F5F9] dark:bg-[#0F172A] p-1 rounded-xl border border-black/10 dark:border-white/10 text-xs sm:text-sm font-bold">
+              <button
+                id="btn-layer-satellite"
+                onClick={() => setMapLayerMode('satellite')}
+                className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors ${
+                  mapLayerMode === 'satellite'
+                    ? 'bg-white dark:bg-[#1E293B] text-[#0F172A] dark:text-white font-extrabold shadow-xs border border-black/10 dark:border-white/10'
+                    : 'text-[#334155] dark:text-[#CBD5E1]'
+                }`}
+              >
+                <Satellite className="w-4 h-4 text-[#15803D] dark:text-[#4ADE80]" />
+                <span>Citra Spasial</span>
+              </button>
+              <button
+                id="btn-layer-vector"
+                onClick={() => setMapLayerMode('vector')}
+                className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors ${
+                  mapLayerMode === 'vector'
+                    ? 'bg-white dark:bg-[#1E293B] text-[#0F172A] dark:text-white font-extrabold shadow-xs border border-black/10 dark:border-white/10'
+                    : 'text-[#334155] dark:text-[#CBD5E1]'
+                }`}
+              >
+                <Layers className="w-4 h-4 text-[#0055D4] dark:text-[#60A5FA]" />
+                <span>Vektor SVG</span>
+              </button>
+            </div>
+
+            {/* Solok Metric Sub-layers when in Vector mode */}
+            {!isGunungkidul && mapLayerMode === 'vector' && (
+              <div className="flex items-center bg-[#F1F5F9] dark:bg-[#0F172A] p-1 rounded-xl border border-black/10 dark:border-white/10 text-xs sm:text-sm font-bold overflow-x-auto">
+                <span className="text-xs text-[#475569] dark:text-[#94A3B8] px-2 font-extrabold uppercase">Metrik:</span>
                 <button
                   id="btn-solok-layer-sdfvi"
                   onClick={() => setSolokMetricLayer('sdfvi')}
-                  className={`px-2 py-1 rounded text-xs transition-colors ${
+                  className={`px-2.5 py-1.5 rounded-lg transition-colors ${
                     solokMetricLayer === 'sdfvi'
-                      ? 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white font-bold shadow-xs'
-                      : 'text-neutral-600 dark:text-neutral-300'
+                      ? 'bg-white dark:bg-[#1E293B] text-[#0F172A] dark:text-white font-black shadow-xs border border-black/10 dark:border-white/10'
+                      : 'text-[#334155] dark:text-[#CBD5E1]'
                   }`}
                 >
                   SDFVI Proxy
@@ -296,10 +357,10 @@ export const MapSection: React.FC<MapSectionProps> = ({
                 <button
                   id="btn-solok-layer-chirps"
                   onClick={() => setSolokMetricLayer('chirps')}
-                  className={`px-2 py-1 rounded text-xs transition-colors ${
+                  className={`px-2.5 py-1.5 rounded-lg transition-colors ${
                     solokMetricLayer === 'chirps'
-                      ? 'bg-white dark:bg-neutral-800 text-orange-700 dark:text-orange-400 font-bold shadow-xs'
-                      : 'text-neutral-600 dark:text-neutral-300'
+                      ? 'bg-white dark:bg-[#1E293B] text-[#9A3412] dark:text-[#FDBA74] font-black shadow-xs border border-black/10 dark:border-white/10'
+                      : 'text-[#334155] dark:text-[#CBD5E1]'
                   }`}
                 >
                   Defisit CHIRPS
@@ -307,10 +368,10 @@ export const MapSection: React.FC<MapSectionProps> = ({
                 <button
                   id="btn-solok-layer-sawah"
                   onClick={() => setSolokMetricLayer('sawah')}
-                  className={`px-2 py-1 rounded text-xs transition-colors ${
+                  className={`px-2.5 py-1.5 rounded-lg transition-colors ${
                     solokMetricLayer === 'sawah'
-                      ? 'bg-white dark:bg-neutral-800 text-emerald-700 dark:text-emerald-400 font-bold shadow-xs'
-                      : 'text-neutral-600 dark:text-neutral-300'
+                      ? 'bg-white dark:bg-[#1E293B] text-[#15803D] dark:text-[#4ADE80] font-black shadow-xs border border-black/10 dark:border-white/10'
+                      : 'text-[#334155] dark:text-[#CBD5E1]'
                   }`}
                 >
                   Sawah (ha)
@@ -318,10 +379,10 @@ export const MapSection: React.FC<MapSectionProps> = ({
                 <button
                   id="btn-solok-layer-gender"
                   onClick={() => setSolokMetricLayer('gender')}
-                  className={`px-2 py-1 rounded text-xs transition-colors ${
+                  className={`px-2.5 py-1.5 rounded-lg transition-colors ${
                     solokMetricLayer === 'gender'
-                      ? 'bg-white dark:bg-neutral-800 text-purple-700 dark:text-purple-400 font-bold shadow-xs'
-                      : 'text-neutral-600 dark:text-neutral-300'
+                      ? 'bg-white dark:bg-[#1E293B] text-[#6B21A8] dark:text-[#D8B4FE] font-black shadow-xs border border-black/10 dark:border-white/10'
+                      : 'text-[#334155] dark:text-[#CBD5E1]'
                   }`}
                 >
                   Sensitivitas Gender
@@ -330,12 +391,12 @@ export const MapSection: React.FC<MapSectionProps> = ({
             )}
 
             {/* Toggle Table Accessibility Mode */}
-            <div className="flex items-center bg-neutral-100 dark:bg-neutral-700 p-1 rounded-lg text-xs font-medium">
+            <div className="flex items-center bg-[#F1F5F9] dark:bg-[#0F172A] p-1 rounded-xl border border-black/10 dark:border-white/10 text-xs sm:text-sm font-bold">
               <button
                 id="btn-view-map"
                 onClick={() => setViewMode('map')}
-                className={`px-2.5 py-1 rounded transition-colors ${
-                  viewMode === 'map' ? 'bg-white dark:bg-neutral-800 font-semibold shadow-xs' : 'text-neutral-600'
+                className={`px-3 py-1.5 rounded-lg transition-colors ${
+                  viewMode === 'map' ? 'bg-white dark:bg-[#1E293B] text-[#0F172A] dark:text-white font-black shadow-xs border border-black/10 dark:border-white/10' : 'text-[#334155] dark:text-[#CBD5E1]'
                 }`}
                 title="Tampilan Peta Grafis"
               >
@@ -344,8 +405,8 @@ export const MapSection: React.FC<MapSectionProps> = ({
               <button
                 id="btn-view-table"
                 onClick={() => setViewMode('table')}
-                className={`px-2.5 py-1 rounded transition-colors ${
-                  viewMode === 'table' ? 'bg-white dark:bg-neutral-800 font-semibold shadow-xs' : 'text-neutral-600'
+                className={`px-3 py-1.5 rounded-lg transition-colors ${
+                  viewMode === 'table' ? 'bg-white dark:bg-[#1E293B] text-[#0F172A] dark:text-white font-black shadow-xs border border-black/10 dark:border-white/10' : 'text-[#334155] dark:text-[#CBD5E1]'
                 }`}
                 title="Tampilan Tabel Aksesibel"
               >
@@ -353,9 +414,60 @@ export const MapSection: React.FC<MapSectionProps> = ({
               </button>
             </div>
 
+            {/* Direct Solok Thematic Map Image Picker (SUT 2026) */}
+            {!isGunungkidul && (
+              <div className="flex items-center gap-1.5 bg-[#F1F5F9] dark:bg-[#0F172A] p-1 rounded-xl border border-black/10 dark:border-white/10">
+                <input 
+                  type="file" 
+                  ref={solokFileInputRef} 
+                  onChange={handleSolokImageUpload} 
+                  accept="image/*" 
+                  className="hidden" 
+                  id="solok-map-file-picker" 
+                />
+                <button
+                  id="btn-upload-solok-map"
+                  onClick={() => solokFileInputRef.current?.click()}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0055D4] text-white hover:bg-[#00409A] text-xs sm:text-sm font-bold transition-all shadow-xs"
+                  title="Pilih dan pasang berkas gambar peta SDFVI Solok SUT 2026 langsung dari perangkat Anda"
+                >
+                  <Upload className="w-4 h-4" />
+                  <span>{customSolokMapImg ? 'Ganti Peta SUT 2026' : 'Gunakan Peta Solok SUT 2026'}</span>
+                </button>
+                {customSolokMapImg && (
+                  <button
+                    onClick={handleResetSolokImage}
+                    className="px-2 py-1.5 rounded-lg border border-rose-300 dark:border-rose-700 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-semibold"
+                    title="Kembalikan ke citra bawaan"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+            )}
+
           </div>
         </div>
       </div>
+
+      {/* Solok Custom Map Notice Banner */}
+      {!isGunungkidul && (
+        <div className="bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 rounded-xl p-3 flex items-start gap-2.5 text-xs text-sky-900 dark:text-sky-200">
+          <Info className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="font-bold">
+              {customSolokMapImg 
+                ? 'Berkas Peta Solok SUT 2026 Anda sedang aktif ditampilkan.' 
+                : 'Peta Tematik Spasial Solok SUT 2026:'}
+            </p>
+            <p className="text-sky-700 dark:text-sky-300 mt-0.5 leading-relaxed">
+              {customSolokMapImg
+                ? 'Peta berasal langsung dari berkas gambar yang Anda pasang. Anda dapat mengganti atau meresetnya sewaktu-waktu.'
+                : 'Klik tombol "Gunakan Peta Solok SUT 2026" di atas untuk memasang berkas citra peta resmi Anda (JPG/PNG) langsung dari perangkat Anda, atau beralih ke tab "Vektor SVG" untuk analisis spasial 14 kecamatan.'}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Main Map Viewport */}
       {viewMode === 'map' && (
@@ -398,25 +510,25 @@ export const MapSection: React.FC<MapSectionProps> = ({
           </div>
 
           {/* Toggle Pins & Labels Overlay */}
-          <div className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-neutral-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-neutral-700 text-xs text-neutral-300 shadow-md">
-            <label className="flex items-center gap-1.5 cursor-pointer">
+          <div className="absolute top-4 left-4 z-20 flex items-center gap-3 bg-[#0F172A]/95 backdrop-blur-md px-3.5 py-2 rounded-xl border-2 border-white/20 text-xs sm:text-sm font-bold text-white shadow-xl">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
               <input 
                 type="checkbox" 
                 checked={showLabels} 
                 onChange={e => setShowLabels(e.target.checked)}
-                className="rounded accent-emerald-500"
+                className="w-4 h-4 rounded accent-emerald-500 cursor-pointer"
               />
-              <span>Label</span>
+              <span>Tampilkan Label</span>
             </label>
-            <span className="text-neutral-600">|</span>
-            <label className="flex items-center gap-1.5 cursor-pointer">
+            <span className="text-white/40">|</span>
+            <label className="flex items-center gap-2 cursor-pointer select-none">
               <input 
                 type="checkbox" 
                 checked={showPins} 
                 onChange={e => setShowPins(e.target.checked)}
-                className="rounded accent-emerald-500"
+                className="w-4 h-4 rounded accent-emerald-500 cursor-pointer"
               />
-              <span>Hotspot Pin</span>
+              <span>Pin Hotspot</span>
             </label>
           </div>
 
@@ -425,21 +537,36 @@ export const MapSection: React.FC<MapSectionProps> = ({
             className="w-full h-full min-h-[580px] flex items-center justify-center p-4 overflow-auto"
             style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'center center', transition: 'transform 0.2s ease-out' }}
           >
-            {isGunungkidul && mapLayerMode === 'satellite' ? (
-              /* Gunungkidul Satellite Thematic Map with Interactive Pins */
-              <div className="relative max-w-4xl w-full mx-auto rounded-xl overflow-hidden shadow-2xl border border-neutral-700 bg-neutral-950">
+            {mapLayerMode === 'satellite' ? (
+              /* Satellite / Spatial Thematic Map with Interactive Pins (Gunungkidul & Solok) */
+              <div className="relative max-w-4xl w-full mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-neutral-700 bg-neutral-950">
+                {/* Active Custom User Map Badge */}
+                {!isGunungkidul && customSolokMapImg && (
+                  <div className="absolute top-4 right-4 z-20 px-3 py-1 rounded-full bg-[#0055D4] text-white text-[11px] font-black shadow-lg border border-white/40 flex items-center gap-1.5">
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Peta Solok SUT 2026 Pengguna Aktif</span>
+                  </div>
+                )}
+
                 <img 
-                  src={thematicMapImg} 
-                  alt="SDFVI–Proxy Peta Spasial Georeferensi Kapanewon Gunungkidul" 
+                  src={isGunungkidul ? gkThematicMapImg : (customSolokMapImg || solokThematicMapImg)} 
+                  alt={isGunungkidul 
+                    ? "SDFVI–Proxy Peta Spasial Georeferensi Kapanewon Gunungkidul" 
+                    : "SDFVI–Proxy Peta Tematik Spasial Citra Satelit Kecamatan Kabupaten Solok"} 
                   className="w-full h-auto block select-none"
                   referrerPolicy="no-referrer"
                 />
 
                 {/* Hotspot Pins Overlay */}
-                {showPins && GK_HOTSPOTS.map((pin) => {
+                {showPins && (isGunungkidul ? GK_HOTSPOTS : SOLOK_HOTSPOTS).map((pin) => {
                   const record = dataMap.get(pin.name.toLowerCase().trim());
                   if (!record) return null;
-                  const isHovered = hoveredUnit?.kapanewon === record.kapanewon;
+                  const unitName = isGunungkidul ? record.kapanewon : record.NAMOBJ;
+                  const isHovered = hoveredUnit && (
+                    isGunungkidul 
+                      ? hoveredUnit.kapanewon === record.kapanewon 
+                      : hoveredUnit.NAMOBJ === record.NAMOBJ
+                  );
                   const badgeColor = getCategoryHexColor(record.priority_category, colorTheme);
 
                   return (
@@ -452,17 +579,17 @@ export const MapSection: React.FC<MapSectionProps> = ({
                       onMouseLeave={() => setHoveredUnit(null)}
                     >
                       <div 
-                        className={`flex items-center justify-center rounded-full transition-transform ${
-                          isHovered ? 'scale-130 shadow-lg ring-3 ring-white' : 'scale-100 hover:scale-120'
+                        className={`flex items-center justify-center rounded-full transition-transform border-2 border-white shadow-xl ${
+                          isHovered ? 'scale-130 ring-4 ring-yellow-400' : 'scale-100 hover:scale-120'
                         }`}
-                        style={{ backgroundColor: badgeColor, width: '22px', height: '22px' }}
+                        style={{ backgroundColor: badgeColor, width: '26px', height: '26px' }}
                       >
-                        <span className="text-[10px] font-bold text-white">#{record.rank}</span>
+                        <span className="text-xs font-black text-white drop-shadow-sm">#{record.rank}</span>
                       </div>
 
                       {showLabels && (
-                        <div className="absolute top-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-1.5 py-0.5 rounded bg-neutral-900/90 text-white text-[10px] font-semibold pointer-events-none shadow-md border border-neutral-700">
-                          {record.kapanewon}
+                        <div className="absolute top-7 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-md bg-[#0F172A]/95 text-white text-xs font-black pointer-events-none shadow-xl border border-white/40">
+                          {unitName}
                         </div>
                       )}
                     </div>
@@ -482,7 +609,7 @@ export const MapSection: React.FC<MapSectionProps> = ({
                 </defs>
 
                 {/* Background Water / Border Outline */}
-                <rect width={svgWidth} height={svgHeight} fill="#111827" rx="16" />
+                <rect width={svgWidth} height={svgHeight} fill="#0F172A" rx="16" />
 
                 {/* Polygons */}
                 {activeGeoJson.features.map((feature: any, idx: number) => {
@@ -510,9 +637,9 @@ export const MapSection: React.FC<MapSectionProps> = ({
                       <path
                         d={pathStr}
                         fill={fillColor}
-                        fillOpacity={isHovered ? 0.95 : 0.75}
-                        stroke={isHovered ? '#ffffff' : '#1f2937'}
-                        strokeWidth={isHovered ? 2.5 : 1.2}
+                        fillOpacity={isHovered ? 1 : 0.85}
+                        stroke={isHovered ? '#ffffff' : '#0f172a'}
+                        strokeWidth={isHovered ? 3 : 1.5}
                         filter={isHovered ? "url(#map-glow)" : undefined}
                         onClick={() => record && onSelectKapanewon(record)}
                         onMouseEnter={() => setHoveredUnit(record)}
@@ -553,9 +680,12 @@ export const MapSection: React.FC<MapSectionProps> = ({
                       textAnchor="middle"
                       dominantBaseline="middle"
                       fill="#ffffff"
-                      fontSize={isGunungkidul ? "9px" : "8px"}
-                      fontWeight="bold"
-                      className="pointer-events-none select-none drop-shadow-md"
+                      stroke="#0F172A"
+                      strokeWidth="3.5"
+                      paintOrder="stroke fill"
+                      fontSize={isGunungkidul ? "11px" : "10px"}
+                      fontWeight="800"
+                      className="pointer-events-none select-none tracking-tight"
                     >
                       {unitName}
                     </text>
@@ -567,133 +697,137 @@ export const MapSection: React.FC<MapSectionProps> = ({
 
           {/* Interactive Hover Tooltip Overlay (Bottom Left) */}
           {hoveredUnit && (
-            <div className="absolute bottom-4 left-4 z-20 max-w-xs w-full bg-neutral-900/95 backdrop-blur-md p-3.5 rounded-xl border border-neutral-700 text-white shadow-xl animate-fade-in">
+            <div className="absolute bottom-4 left-4 z-20 max-w-sm w-full bg-[#0F172A]/95 backdrop-blur-md p-4 rounded-2xl border-2 border-white/20 text-white shadow-2xl animate-fade-in">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-sm text-emerald-400">
+                <span className="font-extrabold text-base text-[#4ADE80]">
                   {isGunungkidul ? hoveredUnit.kapanewon : hoveredUnit.NAMOBJ}
                 </span>
-                <span className="text-[11px] px-2 py-0.5 rounded font-bold bg-neutral-800 text-white border border-neutral-700">
+                <span className="text-xs px-2.5 py-1 rounded-md font-extrabold bg-white text-[#0F172A] shadow-xs">
                   Rank #{hoveredUnit.rank}
                 </span>
               </div>
 
-              <div className="mt-2 space-y-1 text-xs text-neutral-300">
-                <div className="flex justify-between">
-                  <span className="text-neutral-400">SDFVI–Proxy:</span>
-                  <span className="font-mono font-bold text-white">{hoveredUnit.SDFVI_proxy.toFixed(4)}</span>
+              <div className="mt-2.5 space-y-1.5 text-xs sm:text-sm text-[#CBD5E1]">
+                <div className="flex justify-between items-center">
+                  <span className="text-[#94A3B8] font-bold">SDFVI–Proxy:</span>
+                  <span className="font-mono font-black text-white text-sm sm:text-base">{hoveredUnit.SDFVI_proxy?.toFixed(4) ?? '-'}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-neutral-400">Kategori:</span>
-                  <span className="font-semibold text-orange-400">{hoveredUnit.priority_category}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#94A3B8] font-bold">Kategori:</span>
+                  <span className="font-bold text-amber-300">{hoveredUnit.priority_category ?? '-'}</span>
                 </div>
 
                 {isGunungkidul ? (
                   <>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-neutral-400">L1 (ADK & Lansia):</span>
-                      <span className="font-mono">{hoveredUnit.L1_social_sensitivity.toFixed(4)}</span>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#94A3B8]" title="Sensitivitas Sosial: Anak Dengan Kedisabilitasan (ADK) & Lansia Terlantar">L1 (ADK & Lansia):</span>
+                      <span className="font-mono font-bold text-white">{hoveredUnit.L1_social_sensitivity?.toFixed(4) ?? '-'}</span>
                     </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-neutral-400">H (CHIRPS Defisit):</span>
-                      <span className="font-mono">{hoveredUnit.H_meteorological_hazard.toFixed(4)}</span>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#94A3B8]">H (CHIRPS Defisit):</span>
+                      <span className="font-mono font-bold text-white">{hoveredUnit.H_meteorological_hazard?.toFixed(4) ?? '-'}</span>
                     </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-neutral-400">F_area (Defisit Luas):</span>
-                      <span className="font-mono">{hoveredUnit.F_area_land_deficit_proxy.toFixed(4)}</span>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#94A3B8]">F_area (Defisit Luas):</span>
+                      <span className="font-mono font-bold text-white">{hoveredUnit.F_area_land_deficit_proxy?.toFixed(4) ?? '-'}</span>
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-neutral-400">S_i (Gender 60+):</span>
-                      <span className="font-mono">{hoveredUnit.S_i.toFixed(4)}</span>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#94A3B8]">S_i (Gender 60+):</span>
+                      <span className="font-mono font-bold text-white">{hoveredUnit.S_i?.toFixed(4) ?? '-'}</span>
                     </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-neutral-400">CHIRPS Kemarau 2023:</span>
-                      <span className="font-mono">{hoveredUnit.chirps_total_mm.toFixed(1)} mm</span>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#94A3B8]">CHIRPS Kemarau 2023:</span>
+                      <span className="font-mono font-bold text-white">{hoveredUnit.chirps_total_mm !== undefined ? `${hoveredUnit.chirps_total_mm.toFixed(1)} mm` : '-'}</span>
                     </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-neutral-400">Luas Sawah:</span>
-                      <span className="font-mono">{hoveredUnit.sawah_total_ha.toLocaleString('id-ID')} ha</span>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#94A3B8]">Luas Sawah:</span>
+                      <span className="font-mono font-bold text-white">{hoveredUnit.sawah_total_ha !== undefined ? `${hoveredUnit.sawah_total_ha.toLocaleString('id-ID')} ha` : '-'}</span>
                     </div>
                   </>
                 )}
               </div>
 
-              <div className="mt-2.5 pt-2 border-t border-neutral-700/80 text-[10px] text-neutral-400 flex items-center justify-between">
+              <div className="mt-3 pt-2.5 border-t border-neutral-700 text-xs text-[#CBD5E1] flex items-center justify-between font-bold">
                 <span>Klik untuk membuka profil penuh</span>
-                <span className="text-emerald-400">Detail →</span>
+                <span className="text-[#4ADE80] font-black">Detail →</span>
               </div>
             </div>
           )}
 
           {/* Dynamic Map Legend Overlay (Bottom Right) */}
-          <div className="absolute bottom-4 right-4 z-20 bg-neutral-900/90 backdrop-blur-md p-3 rounded-xl border border-neutral-700 text-xs text-white shadow-xl">
-            <div className="font-semibold text-[11px] text-neutral-400 mb-1.5">
+          <div className="absolute bottom-4 right-4 z-20 bg-[#0F172A]/95 backdrop-blur-md p-3.5 rounded-2xl border-2 border-white/20 text-xs sm:text-sm text-white shadow-2xl">
+            <div className="font-extrabold text-xs text-slate-300 uppercase tracking-wider mb-2">
               {isGunungkidul && 'Prioritas Relatif SDFVI–Proxy'}
-              {!isGunungkidul && solokMetricLayer === 'sdfvi' && 'Legenda SDFVI Proxy Solok'}
-              {!isGunungkidul && solokMetricLayer === 'chirps' && 'Legenda Defisit Presipitasi'}
-              {!isGunungkidul && solokMetricLayer === 'sawah' && 'Legenda Luas Sawah (ha)'}
-              {!isGunungkidul && solokMetricLayer === 'gender' && 'Legenda Sensitivitas Gender'}
+              {!isGunungkidul && (mapLayerMode === 'satellite' || solokMetricLayer === 'sdfvi') && 'SDFVI-Proxy Index (SUT 2026)'}
+              {!isGunungkidul && mapLayerMode === 'vector' && solokMetricLayer === 'chirps' && 'Legenda Defisit Presipitasi'}
+              {!isGunungkidul && mapLayerMode === 'vector' && solokMetricLayer === 'sawah' && 'Legenda Luas Sawah (ha)'}
+              {!isGunungkidul && mapLayerMode === 'vector' && solokMetricLayer === 'gender' && 'Legenda Sensitivitas Gender'}
             </div>
 
             {isGunungkidul ? (
-              <div className="space-y-1.5 text-[11px]">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded shadow-xs" style={{ backgroundColor: getCategoryHexColor('Sangat Tinggi', colorTheme) }} />
+              <div className="space-y-1.5 text-xs font-bold">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3.5 h-3.5 rounded border border-white/50 shadow-xs" style={{ backgroundColor: getCategoryHexColor('Sangat Tinggi', colorTheme) }} />
                   <span>Sangat Tinggi (0.8000–1.0000)</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded shadow-xs" style={{ backgroundColor: getCategoryHexColor('Tinggi', colorTheme) }} />
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3.5 h-3.5 rounded border border-white/50 shadow-xs" style={{ backgroundColor: getCategoryHexColor('Tinggi', colorTheme) }} />
                   <span>Tinggi (0.6000–0.7999)</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded shadow-xs border border-amber-300/40" style={{ backgroundColor: getCategoryHexColor('Sedang', colorTheme) }} />
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3.5 h-3.5 rounded border border-white/50 shadow-xs" style={{ backgroundColor: getCategoryHexColor('Sedang', colorTheme) }} />
                   <span>Sedang (0.4000–0.5999)</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded shadow-xs" style={{ backgroundColor: getCategoryHexColor('Rendah', colorTheme) }} />
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3.5 h-3.5 rounded border border-white/50 shadow-xs" style={{ backgroundColor: getCategoryHexColor('Rendah', colorTheme) }} />
                   <span>Rendah (0.0000–0.3999)</span>
                 </div>
               </div>
-            ) : solokMetricLayer === 'sdfvi' ? (
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded" style={{ backgroundColor: getCategoryHexColor('Tinggi', colorTheme) }} />
-                  <span>Tinggi (Prioritas Utama)</span>
+            ) : (mapLayerMode === 'satellite' || solokMetricLayer === 'sdfvi') ? (
+              <div className="space-y-1.5 text-xs font-bold">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3.5 h-3.5 rounded border border-white/50 shadow-xs" style={{ backgroundColor: getCategoryHexColor('Sangat Tinggi', colorTheme) }} />
+                  <span>Sangat tinggi — prioritas intervensi relatif</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded" style={{ backgroundColor: getCategoryHexColor('Sedang', colorTheme) }} />
-                  <span>Sedang (Prioritas Menengah)</span>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3.5 h-3.5 rounded border border-white/50 shadow-xs" style={{ backgroundColor: getCategoryHexColor('Tinggi', colorTheme) }} />
+                  <span>Tinggi — prioritas intervensi relatif</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded" style={{ backgroundColor: getCategoryHexColor('Rendah', colorTheme) }} />
-                  <span>Rendah (Prioritas Dasar)</span>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3.5 h-3.5 rounded border border-white/50 shadow-xs" style={{ backgroundColor: getCategoryHexColor('Sedang', colorTheme) }} />
+                  <span>Sedang — prioritas intervensi relatif</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded" style={{ backgroundColor: getCategoryHexColor('Terendah', colorTheme) }} />
-                  <span>Terendah</span>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3.5 h-3.5 rounded border border-white/50 shadow-xs" style={{ backgroundColor: getCategoryHexColor('Rendah', colorTheme) }} />
+                  <span>Rendah — prioritas intervensi relatif</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3.5 h-3.5 rounded border border-white/50 shadow-xs" style={{ backgroundColor: getCategoryHexColor('Terendah', colorTheme) }} />
+                  <span>Terendah — prioritas relatif</span>
                 </div>
               </div>
             ) : solokMetricLayer === 'chirps' ? (
-              <div className="space-y-1 text-[11px]">
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-red-700" /><span>Terkering (&lt; 500 mm / H_i &gt; 0.8)</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-orange-600" /><span>Kering (500–600 mm)</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-amber-500" /><span>Moderat (600–700 mm)</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-blue-500" /><span>Relatif Basah (&gt; 700 mm)</span></div>
+              <div className="space-y-1.5 text-xs font-bold">
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-red-700" /><span>Terkering (&lt; 500 mm / H_i &gt; 0.8)</span></div>
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-orange-600" /><span>Kering (500–600 mm)</span></div>
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-amber-500" /><span>Moderat (600–700 mm)</span></div>
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-blue-500" /><span>Relatif Basah (&gt; 700 mm)</span></div>
               </div>
             ) : solokMetricLayer === 'sawah' ? (
-              <div className="space-y-1 text-[11px]">
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-emerald-800" /><span>Sangat Luas (&gt; 2.500 ha)</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-emerald-600" /><span>Luas (1.200–2.500 ha)</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-emerald-400" /><span>Sedang (500–1.200 ha)</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-slate-400" /><span>Sempit (&lt; 500 ha)</span></div>
+              <div className="space-y-1.5 text-xs font-bold">
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-emerald-800" /><span>Sangat Luas (&gt; 2.500 ha)</span></div>
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-emerald-600" /><span>Luas (1.200–2.500 ha)</span></div>
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-emerald-400" /><span>Sedang (500–1.200 ha)</span></div>
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-slate-400" /><span>Sempit (&lt; 500 ha)</span></div>
               </div>
             ) : (
-              <div className="space-y-1 text-[11px]">
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-purple-700" /><span>Sensitivitas Tinggi (S_i &gt; 0.7)</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-purple-500" /><span>Moderat (0.4–0.7)</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-purple-300" /><span>Rendah (&lt; 0.4)</span></div>
+              <div className="space-y-1.5 text-xs font-bold">
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-purple-700" /><span>Sensitivitas Tinggi (S_i &gt; 0.7)</span></div>
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-purple-500" /><span>Moderat (0.4–0.7)</span></div>
+                <div className="flex items-center gap-2.5"><span className="w-3.5 h-3.5 rounded border border-white/50 bg-purple-300" /><span>Rendah (&lt; 0.4)</span></div>
               </div>
             )}
           </div>
@@ -702,66 +836,66 @@ export const MapSection: React.FC<MapSectionProps> = ({
 
       {/* Accessible Table Mode */}
       {viewMode === 'table' && (
-        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-4 sm:p-5 shadow-xs">
+        <div className="bg-white dark:bg-[#1E293B] border-2 border-black/[0.08] dark:border-white/[0.12] rounded-2xl p-5 shadow-xs">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs sm:text-sm">
+            <table className="w-full text-left border-collapse text-sm sm:text-base">
               <thead>
-                <tr className="border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-700/40 font-semibold text-neutral-600 dark:text-neutral-300">
-                  <th className="py-2.5 px-3 text-center w-16">Peringkat</th>
-                  <th className="py-2.5 px-3">{isGunungkidul ? 'Kapanewon' : 'Kecamatan'}</th>
-                  <th className="py-2.5 px-3 text-right">Skor SDFVI–Proxy</th>
-                  <th className="py-2.5 px-3 text-center">Kategori Prioritas</th>
+                <tr className="border-b-2 border-black/[0.08] dark:border-white/[0.12] bg-[#F1F5F9] dark:bg-[#0F172A] font-extrabold text-[#0F172A] dark:text-white">
+                  <th className="py-3.5 px-4 text-center w-20">Peringkat</th>
+                  <th className="py-3.5 px-4">{isGunungkidul ? 'Kapanewon' : 'Kecamatan'}</th>
+                  <th className="py-3.5 px-4 text-right">Skor SDFVI–Proxy</th>
+                  <th className="py-3.5 px-4 text-center">Kategori Prioritas</th>
                   {isGunungkidul ? (
                     <>
-                      <th className="py-2.5 px-3 text-right">L1 (Sensitivitas)</th>
-                      <th className="py-2.5 px-3 text-right">H (Bahaya Met.)</th>
-                      <th className="py-2.5 px-3 text-right">F_area (Defisit Luas)</th>
+                      <th className="py-3.5 px-4 text-right">L1 (Sensitivitas)</th>
+                      <th className="py-3.5 px-4 text-right">H (Bahaya Met.)</th>
+                      <th className="py-3.5 px-4 text-right">F_area (Defisit Luas)</th>
                     </>
                   ) : (
                     <>
-                      <th className="py-2.5 px-3 text-right">S_i (Gender 60+)</th>
-                      <th className="py-2.5 px-3 text-right">H_i (CHIRPS 2023)</th>
-                      <th className="py-2.5 px-3 text-right">E_i (Luas Sawah)</th>
+                      <th className="py-3.5 px-4 text-right">S_i (Gender 60+)</th>
+                      <th className="py-3.5 px-4 text-right">H_i (CHIRPS 2023)</th>
+                      <th className="py-3.5 px-4 text-right">E_i (Luas Sawah)</th>
                     </>
                   )}
-                  <th className="py-2.5 px-3 text-center w-24">Aksi</th>
+                  <th className="py-3.5 px-4 text-center w-28">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-100 dark:divide-neutral-700/60">
+              <tbody className="divide-y divide-black/[0.06] dark:divide-white/[0.08]">
                 {isGunungkidul ? (
                   data.map(item => {
                     const badgeClass = getCategoryBadgeClasses(item.priority_category, colorTheme);
                     return (
-                      <tr key={item.kapanewon} className="hover:bg-neutral-50 dark:hover:bg-neutral-700/30">
-                        <td className="py-2.5 px-3 text-center font-bold text-neutral-700 dark:text-neutral-300">
+                      <tr key={item.kapanewon} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+                        <td className="py-3 px-4 text-center font-black text-[#0F172A] dark:text-white">
                           #{item.rank}
                         </td>
-                        <td className="py-2.5 px-3 font-semibold text-neutral-900 dark:text-white">
+                        <td className="py-3 px-4 font-bold text-[#0F172A] dark:text-white">
                           {item.kapanewon}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono font-bold">
-                          {item.SDFVI_proxy.toFixed(4)}
+                        <td className="py-3 px-4 text-right font-mono font-black text-[#0F172A] dark:text-white">
+                          {item.SDFVI_proxy?.toFixed(4) ?? '-'}
                         </td>
-                        <td className="py-2.5 px-3 text-center">
-                          <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${badgeClass}`}>
+                        <td className="py-3 px-4 text-center">
+                          <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${badgeClass}`}>
                             {item.priority_category}
                           </span>
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono text-neutral-600 dark:text-neutral-400">
-                          {item.L1_social_sensitivity.toFixed(4)}
+                        <td className="py-3 px-4 text-right font-mono font-semibold text-[#334155] dark:text-[#CBD5E1]">
+                          {item.L1_social_sensitivity?.toFixed(4) ?? '-'}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono text-neutral-600 dark:text-neutral-400">
-                          {item.H_meteorological_hazard.toFixed(4)}
+                        <td className="py-3 px-4 text-right font-mono font-semibold text-[#334155] dark:text-[#CBD5E1]">
+                          {item.H_meteorological_hazard?.toFixed(4) ?? '-'}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono text-neutral-600 dark:text-neutral-400">
-                          {item.F_area_land_deficit_proxy.toFixed(4)}
+                        <td className="py-3 px-4 text-right font-mono font-semibold text-[#334155] dark:text-[#CBD5E1]">
+                          {item.F_area_land_deficit_proxy?.toFixed(4) ?? '-'}
                         </td>
-                        <td className="py-2.5 px-3 text-center">
+                        <td className="py-3 px-4 text-center">
                           <button
                             onClick={() => onSelectKapanewon(item)}
-                            className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold hover:underline"
+                            className="text-xs sm:text-sm text-[#15803D] dark:text-[#4ADE80] font-black hover:underline"
                           >
-                            Rincian
+                            Buka Profil →
                           </button>
                         </td>
                       </tr>
@@ -771,36 +905,36 @@ export const MapSection: React.FC<MapSectionProps> = ({
                   solokList.map(item => {
                     const badgeClass = getCategoryBadgeClasses(item.priority_category, colorTheme);
                     return (
-                      <tr key={item.NAMOBJ} className="hover:bg-neutral-50 dark:hover:bg-neutral-700/30">
-                        <td className="py-2.5 px-3 text-center font-bold text-neutral-700 dark:text-neutral-300">
+                      <tr key={item.NAMOBJ} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+                        <td className="py-3 px-4 text-center font-black text-[#0F172A] dark:text-white">
                           #{item.rank}
                         </td>
-                        <td className="py-2.5 px-3 font-semibold text-neutral-900 dark:text-white">
+                        <td className="py-3 px-4 font-bold text-[#0F172A] dark:text-white">
                           {item.NAMOBJ}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono font-bold">
-                          {item.SDFVI_proxy.toFixed(4)}
+                        <td className="py-3 px-4 text-right font-mono font-black text-[#0F172A] dark:text-white">
+                          {item.SDFVI_proxy?.toFixed(4) ?? '-'}
                         </td>
-                        <td className="py-2.5 px-3 text-center">
-                          <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${badgeClass}`}>
+                        <td className="py-3 px-4 text-center">
+                          <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${badgeClass}`}>
                             {item.priority_category}
                           </span>
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono text-neutral-600 dark:text-neutral-400">
-                          {item.S_i.toFixed(4)}
+                        <td className="py-3 px-4 text-right font-mono font-semibold text-[#334155] dark:text-[#CBD5E1]">
+                          {item.S_i?.toFixed(4) ?? '-'}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono text-neutral-600 dark:text-neutral-400">
-                          {item.H_i.toFixed(4)}
+                        <td className="py-3 px-4 text-right font-mono font-semibold text-[#334155] dark:text-[#CBD5E1]">
+                          {item.H_i?.toFixed(4) ?? '-'}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono text-neutral-600 dark:text-neutral-400">
-                          {item.E_i.toFixed(4)}
+                        <td className="py-3 px-4 text-right font-mono font-semibold text-[#334155] dark:text-[#CBD5E1]">
+                          {item.E_i?.toFixed(4) ?? '-'}
                         </td>
-                        <td className="py-2.5 px-3 text-center">
+                        <td className="py-3 px-4 text-center">
                           <button
                             onClick={() => onSelectKapanewon(item)}
-                            className="text-xs text-blue-700 dark:text-blue-400 font-semibold hover:underline"
+                            className="text-xs sm:text-sm text-[#0055D4] dark:text-[#60A5FA] font-black hover:underline"
                           >
-                            Rincian
+                            Buka Profil →
                           </button>
                         </td>
                       </tr>

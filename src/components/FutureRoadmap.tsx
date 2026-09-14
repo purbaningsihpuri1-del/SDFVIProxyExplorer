@@ -46,7 +46,7 @@ export const FutureRoadmap: React.FC = () => {
               Pilot SDFVI–Proxy Gunungkidul
             </h3>
             <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-              Memanfaatkan 3 proksi data administratif makro (ADK/Lansia, CHIRPS kemarau, dan luas panen palawija BPS) pada 18 kapanewon.
+              Memanfaatkan 3 proksi data administratif makro (ADK [Anak Dengan Kedisabilitasan] & Lansia, CHIRPS kemarau, dan luas panen palawija BPS) pada 18 kapanewon.
             </p>
           </div>
           <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1">

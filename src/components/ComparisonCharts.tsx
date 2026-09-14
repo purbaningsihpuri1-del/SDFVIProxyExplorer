@@ -46,40 +46,40 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
   return (
     <div className="space-y-6" id="comparison-charts-container">
       {/* Chart Selector & Accessibility Bar */}
-      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-4 sm:p-5 shadow-xs">
+      <div className="bg-white dark:bg-[#1E293B] border-2 border-black/[0.08] dark:border-white/[0.12] rounded-2xl p-4 sm:p-5 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h2 className="text-base sm:text-lg font-bold text-neutral-900 dark:text-white flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-emerald-600" />
+            <h2 className="text-lg sm:text-xl font-extrabold text-[#0F172A] dark:text-white flex items-center gap-2.5 tracking-tight">
+              <BarChart3 className="w-5 h-5 text-[#15803D] dark:text-[#4ADE80]" />
               <span>
                 {isGunungkidul 
                   ? 'Grafik Komparatif Dimensi Kerentanan Gunungkidul' 
                   : 'Grafik Komparatif Dimensi Kerentanan Solok (14 Kecamatan)'}
               </span>
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+            <p className="text-xs sm:text-sm text-[#334155] dark:text-[#CBD5E1] mt-1.5 font-medium leading-relaxed">
               {isGunungkidul
                 ? 'Analisis komparatif Sensitivitas Sosial (L1), Bahaya Meteorologis (H), dan Defisit Luas Panen (F_area).'
                 : 'Analisis komparatif Sensitivitas Gender (S_i), Defisit CHIRPS 2023 (H_i), dan Eksposur Sawah Padi Anak Daro (E_i).'}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             {/* Quick Pilot Switcher */}
             {onSwitchPilot && (
-              <div className="flex items-center bg-neutral-100 dark:bg-neutral-700 p-1 rounded-lg text-xs font-semibold mr-2">
+              <div className="flex items-center bg-[#F1F5F9] dark:bg-[#0F172A] p-1 rounded-xl border border-black/10 dark:border-white/10 text-xs sm:text-sm font-bold mr-2">
                 <button
                   onClick={() => onSwitchPilot('gunungkidul')}
-                  className={`px-2.5 py-1 rounded transition-colors ${
-                    isGunungkidul ? 'bg-emerald-600 text-white shadow-xs' : 'text-neutral-600 dark:text-neutral-300'
+                  className={`px-3 py-1.5 rounded-lg transition-colors ${
+                    isGunungkidul ? 'bg-[#15803D] text-white shadow-xs' : 'text-[#334155] dark:text-[#CBD5E1] hover:text-black dark:hover:text-white'
                   }`}
                 >
                   Gunungkidul
                 </button>
                 <button
                   onClick={() => onSwitchPilot('solok')}
-                  className={`px-2.5 py-1 rounded transition-colors ${
-                    !isGunungkidul ? 'bg-blue-600 text-white shadow-xs' : 'text-neutral-600 dark:text-neutral-300'
+                  className={`px-3 py-1.5 rounded-lg transition-colors ${
+                    !isGunungkidul ? 'bg-[#0055D4] text-white shadow-xs' : 'text-[#334155] dark:text-[#CBD5E1] hover:text-black dark:hover:text-white'
                   }`}
                 >
                   Solok
@@ -88,14 +88,14 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
             )}
 
             {/* View Selector Buttons */}
-            <div className="flex items-center bg-neutral-100 dark:bg-neutral-700/80 p-1 rounded-lg text-xs font-medium">
+            <div className="flex items-center bg-[#F1F5F9] dark:bg-[#0F172A] p-1 rounded-xl border border-black/10 dark:border-white/10 text-xs sm:text-sm font-bold">
               <button
                 id="btn-chart-rank"
                 onClick={() => setActiveChart('rank')}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
+                className={`px-3 py-1.5 rounded-lg transition-colors ${
                   activeChart === 'rank'
-                    ? 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white font-bold shadow-xs'
-                    : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900'
+                    ? 'bg-[#0F172A] text-white dark:bg-white dark:text-[#0F172A] font-extrabold shadow-xs'
+                    : 'text-[#334155] dark:text-[#CBD5E1] hover:text-black dark:hover:text-white'
                 }`}
               >
                 Peringkat Indeks
@@ -103,10 +103,10 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
               <button
                 id="btn-chart-components"
                 onClick={() => setActiveChart('components')}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
+                className={`px-3 py-1.5 rounded-lg transition-colors ${
                   activeChart === 'components'
-                    ? 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white font-bold shadow-xs'
-                    : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900'
+                    ? 'bg-[#0F172A] text-white dark:bg-white dark:text-[#0F172A] font-extrabold shadow-xs'
+                    : 'text-[#334155] dark:text-[#CBD5E1] hover:text-black dark:hover:text-white'
                 }`}
               >
                 3 Komponen
@@ -114,10 +114,10 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
               <button
                 id="btn-chart-scatter"
                 onClick={() => setActiveChart('scatter')}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
+                className={`px-3 py-1.5 rounded-lg transition-colors ${
                   activeChart === 'scatter'
-                    ? 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white font-bold shadow-xs'
-                    : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900'
+                    ? 'bg-[#0F172A] text-white dark:bg-white dark:text-[#0F172A] font-extrabold shadow-xs'
+                    : 'text-[#334155] dark:text-[#CBD5E1] hover:text-black dark:hover:text-white'
                 }`}
               >
                 Diagram Sebar
@@ -125,10 +125,10 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
               <button
                 id="btn-chart-quadrant"
                 onClick={() => setActiveChart('quadrant')}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
+                className={`px-3 py-1.5 rounded-lg transition-colors ${
                   activeChart === 'quadrant'
-                    ? 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white font-bold shadow-xs'
-                    : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900'
+                    ? 'bg-[#0F172A] text-white dark:bg-white dark:text-[#0F172A] font-extrabold shadow-xs'
+                    : 'text-[#334155] dark:text-[#CBD5E1] hover:text-black dark:hover:text-white'
                 }`}
               >
                 Kuadran Prioritas
@@ -139,10 +139,10 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
             <button
               id="btn-chart-table-toggle"
               onClick={() => setShowTableAlternative(!showTableAlternative)}
-              className={`p-2 rounded-lg border text-xs font-medium transition-colors ${
+              className={`p-2 rounded-xl border-2 text-xs font-bold transition-colors ${
                 showTableAlternative
-                  ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 border-neutral-900'
-                  : 'bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-300 dark:border-neutral-600 hover:bg-neutral-50'
+                  ? 'bg-[#0F172A] text-white dark:bg-white dark:text-[#0F172A] border-transparent'
+                  : 'bg-white dark:bg-[#1E293B] text-[#0F172A] dark:text-white border-black/15 dark:border-white/20 hover:bg-neutral-100'
               }`}
               title="Tampilkan data dalam format tabel aksesibel"
             >
@@ -153,23 +153,23 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
       </div>
 
       {/* Primary Chart Area */}
-      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-5 sm:p-6 shadow-xs">
+      <div className="bg-white dark:bg-[#1E293B] border-2 border-black/[0.08] dark:border-white/[0.12] rounded-2xl p-5 sm:p-6 shadow-xs">
         
         {/* CHART 1: Ranked Bar Chart */}
         {activeChart === 'rank' && (
           <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-neutral-200 dark:border-neutral-700">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3.5 border-b-2 border-black/[0.08] dark:border-white/[0.12]">
               <div>
-                <h3 className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white">
+                <h3 className="text-base sm:text-lg font-extrabold text-[#0F172A] dark:text-white">
                   Distribusi Skor SDFVI–Proxy Terurut (Descending)
                 </h3>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                <p className="text-xs sm:text-sm text-[#334155] dark:text-[#CBD5E1] font-medium">
                   {isGunungkidul
                     ? 'Wonosari (0.7248) hingga Nglipar (0.3732) — Rentang terstandarisasi [0, 1]'
                     : 'Hiliran Gumanti (0.6715) hingga Danau Kembar (0.1834) — 14 Kecamatan Lengkap'}
                 </p>
               </div>
-              <span className="text-xs font-medium text-neutral-400">
+              <span className="text-xs sm:text-sm font-bold text-[#15803D] dark:text-[#4ADE80] bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-lg border border-emerald-500/30">
                 Formula: (Komponen 1 + Komponen 2 + Komponen 3) / 3
               </span>
             </div>
@@ -179,11 +179,11 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
               <svg viewBox="0 0 800 480" className="w-full h-auto">
                 {/* Grid Lines */}
                 {[0, 0.2, 0.4, 0.6, 0.8, 1.0].map((val) => {
-                  const y = 420 - val * 380;
+                  const y = 410 - val * 360;
                   return (
                     <g key={val}>
-                      <line x1="140" y1={y} x2="780" y2={y} stroke="#e5e7eb" strokeDasharray="3,3" className="dark:stroke-neutral-700" />
-                      <text x="130" y={y + 4} textAnchor="end" fontSize="11" fill="#9ca3af" fontFamily="monospace">
+                      <line x1="140" y1={y} x2="780" y2={y} stroke="#cbd5e1" strokeWidth="1" strokeDasharray="4,4" className="dark:stroke-neutral-700" />
+                      <text x="130" y={y + 4} textAnchor="end" fontSize="12" fontWeight="bold" fill="#334155" className="dark:fill-[#CBD5E1]" fontFamily="monospace">
                         {val.toFixed(1)}
                       </text>
                     </g>
@@ -195,11 +195,12 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
                   const total = activeSortedList.length;
                   const barWidth = Math.min(28, (620 / total) - 8);
                   const x = 150 + idx * (620 / total);
-                  const score = item.SDFVI_proxy;
-                  const barHeight = score * 380;
-                  const y = 420 - barHeight;
+                  const score = Number(item.SDFVI_proxy ?? 0);
+                  const barHeight = score * 360;
+                  const y = 410 - barHeight;
                   const color = getCategoryHexColor(item.priority_category, colorTheme);
-                  const name = isGunungkidul ? (item as KapanewonData).kapanewon : (item as SolokKecamatanData).NAMOBJ;
+                  const isItemGK = 'kapanewon' in item;
+                  const name = isItemGK ? (item as KapanewonData).kapanewon : (item as SolokKecamatanData).NAMOBJ;
 
                   return (
                     <g 
@@ -215,19 +216,21 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
                         width={barWidth}
                         height={barHeight}
                         fill={color}
-                        rx="4"
+                        rx="5"
+                        stroke="#0F172A"
+                        strokeWidth="1"
                         className="transition-all hover:opacity-85"
                       />
                       
                       {/* Score label on top of bar */}
                       <text
                         x={x + barWidth / 2}
-                        y={y - 6}
+                        y={y - 8}
                         textAnchor="middle"
-                        fontSize="9"
-                        fontWeight="bold"
-                        fill="#6b7280"
-                        className="dark:fill-neutral-300 font-mono"
+                        fontSize="11"
+                        fontWeight="800"
+                        fill="#0F172A"
+                        className="dark:fill-white font-mono"
                       >
                         {score.toFixed(3)}
                       </text>
@@ -235,13 +238,13 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
                       {/* X-Axis Name (Rotated) */}
                       <text
                         x={x + barWidth / 2}
-                        y="435"
+                        y="428"
                         textAnchor="start"
-                        transform={`rotate(45, ${x + barWidth / 2}, 435)`}
-                        fontSize="10"
-                        fontWeight="500"
-                        fill="#4b5563"
-                        className="dark:fill-neutral-300"
+                        transform={`rotate(45, ${x + barWidth / 2}, 428)`}
+                        fontSize="11"
+                        fontWeight="700"
+                        fill="#0F172A"
+                        className="dark:fill-[#F1F5F9]"
                       >
                         {name}
                       </text>
@@ -256,46 +259,47 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
         {/* CHART 2: Stacked Components Chart */}
         {activeChart === 'components' && (
           <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-neutral-200 dark:border-neutral-700">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3.5 border-b-2 border-black/[0.08] dark:border-white/[0.12]">
               <div>
-                <h3 className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white">
+                <h3 className="text-base sm:text-lg font-extrabold text-[#0F172A] dark:text-white">
                   Dekomposisi Kontribusi 3 Komponen Penyusun Skor
                 </h3>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                <p className="text-xs sm:text-sm text-[#334155] dark:text-[#CBD5E1] font-medium">
                   {isGunungkidul
                     ? 'Sensitivitas Sosial (Ungu), Bahaya Meteorologis (Biru), dan Defisit Lahan Pangan (Oranye)'
                     : 'Sensitivitas Gender S_i (Ungu), Defisit CHIRPS H_i (Oranye-Merah), dan Sawah E_i (Hijau)'}
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 text-xs">
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-purple-600" /> {isGunungkidul ? 'L1 (ADK)' : 'S_i (Gender)'}</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-600" /> {isGunungkidul ? 'H (CHIRPS)' : 'H_i (CHIRPS)'}</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-amber-500" /> {isGunungkidul ? 'F_area' : 'E_i (Sawah)'}</span>
+              <div className="flex items-center gap-3 text-xs sm:text-sm font-bold text-[#0F172A] dark:text-white">
+                <span className="flex items-center gap-1.5" title="Sensitivitas Sosial: Anak Dengan Kedisabilitasan (ADK) & Lansia Terlantar"><span className="w-3.5 h-3.5 rounded bg-purple-600 border border-black/20" /> {isGunungkidul ? 'L1 (ADK & Lansia)' : 'S_i (Gender)'}</span>
+                <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 rounded bg-blue-600 border border-black/20" /> {isGunungkidul ? 'H (CHIRPS)' : 'H_i (CHIRPS)'}</span>
+                <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 rounded bg-amber-500 border border-black/20" /> {isGunungkidul ? 'F_area' : 'E_i (Sawah)'}</span>
               </div>
             </div>
 
             {/* Stacked Bar Rows */}
-            <div className="space-y-2.5 pt-2">
+            <div className="space-y-3 pt-2">
               {activeSortedList.map((item) => {
-                const name = isGunungkidul ? (item as KapanewonData).kapanewon : (item as SolokKecamatanData).NAMOBJ;
-                const c1 = isGunungkidul ? (item as KapanewonData).L1_social_sensitivity : (item as SolokKecamatanData).S_i;
-                const c2 = isGunungkidul ? (item as KapanewonData).H_meteorological_hazard : (item as SolokKecamatanData).H_i;
-                const c3 = isGunungkidul ? (item as KapanewonData).F_area_land_deficit_proxy : (item as SolokKecamatanData).E_i;
+                const isItemGK = 'kapanewon' in item;
+                const name = isItemGK ? (item as KapanewonData).kapanewon : (item as SolokKecamatanData).NAMOBJ;
+                const c1 = Number((isItemGK ? (item as KapanewonData).L1_social_sensitivity : (item as SolokKecamatanData).S_i) ?? 0);
+                const c2 = Number((isItemGK ? (item as KapanewonData).H_meteorological_hazard : (item as SolokKecamatanData).H_i) ?? 0);
+                const c3 = Number((isItemGK ? (item as KapanewonData).F_area_land_deficit_proxy : (item as SolokKecamatanData).E_i) ?? 0);
                 const sum = (c1 + c2 + c3) / 3;
 
                 return (
                   <div 
                     key={name} 
-                    className="flex items-center gap-3 text-xs cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/30 p-1.5 rounded-lg transition-colors"
+                    className="flex items-center gap-3.5 text-xs sm:text-sm cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/30 p-2 rounded-xl transition-colors"
                     onClick={() => onSelectKapanewon(item)}
                   >
-                    <div className="w-28 sm:w-36 font-semibold text-neutral-800 dark:text-neutral-200 truncate shrink-0 flex items-center justify-between">
+                    <div className="w-32 sm:w-40 font-bold text-[#0F172A] dark:text-white truncate shrink-0 flex items-center justify-between">
                       <span>{name}</span>
-                      <span className="font-mono text-neutral-400 text-[10px]">#{item.rank}</span>
+                      <span className="font-mono text-[#475569] dark:text-[#94A3B8] text-xs font-black">#{item.rank ?? '-'}</span>
                     </div>
 
-                    <div className="flex-1 h-5 bg-neutral-100 dark:bg-neutral-700 rounded-md overflow-hidden flex shadow-inner">
+                    <div className="flex-1 h-6 bg-[#E2E8F0] dark:bg-neutral-700 rounded-lg overflow-hidden flex shadow-inner border border-black/10 dark:border-white/10">
                       <div 
                         style={{ width: `${(c1 / 3) * 100}%` }} 
                         className="bg-purple-600 h-full" 
@@ -313,7 +317,7 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
                       />
                     </div>
 
-                    <div className="w-14 text-right font-mono font-bold text-neutral-900 dark:text-white shrink-0">
+                    <div className="w-16 text-right font-mono font-black text-[#0F172A] dark:text-white shrink-0 text-sm">
                       {sum.toFixed(4)}
                     </div>
                   </div>
@@ -326,14 +330,14 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
         {/* CHART 3: Scatter Plot (Sensitivity vs Hazard) */}
         {activeChart === 'scatter' && (
           <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-neutral-200 dark:border-neutral-700">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3.5 border-b-2 border-black/[0.08] dark:border-white/[0.12]">
               <div>
-                <h3 className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white">
+                <h3 className="text-base sm:text-lg font-extrabold text-[#0F172A] dark:text-white">
                   Diagram Sebar: Sensitivitas Sosial vs Bahaya Meteorologis
                 </h3>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                <p className="text-xs sm:text-sm text-[#334155] dark:text-[#CBD5E1] font-medium">
                   {isGunungkidul
-                    ? 'Sumbu X = Bahaya CHIRPS (H), Sumbu Y = Sensitivitas ADK (L1), Ukuran Gelembung = Defisit Lahan (F_area)'
+                    ? 'Sumbu X = Bahaya CHIRPS (H), Sumbu Y = Sensitivitas Sosial ADK [Anak Dengan Kedisabilitasan] & Lansia (L1), Ukuran Gelembung = Defisit Lahan (F_area)'
                     : 'Sumbu X = Defisit Presipitasi CHIRPS (H_i), Sumbu Y = Sensitivitas Gender (S_i), Ukuran = Luas Sawah (E_i)'}
                 </p>
               </div>
@@ -348,18 +352,18 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
                 <rect x="370" y="210" width="300" height="180" fill="#fefce8" fillOpacity="0.4" className="dark:fill-yellow-950/20" />
 
                 {/* Axes */}
-                <line x1="70" y1="390" x2="670" y2="390" stroke="#9ca3af" strokeWidth="1.5" />
-                <line x1="70" y1="30" x2="70" y2="390" stroke="#9ca3af" strokeWidth="1.5" />
+                <line x1="70" y1="390" x2="670" y2="390" stroke="#475569" strokeWidth="2" />
+                <line x1="70" y1="30" x2="70" y2="390" stroke="#475569" strokeWidth="2" />
 
                 {/* Median divider lines */}
-                <line x1="370" y1="30" x2="370" y2="390" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="4,4" />
-                <line x1="70" y1="210" x2="670" y2="210" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="4,4" />
+                <line x1="370" y1="30" x2="370" y2="390" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4,4" />
+                <line x1="70" y1="210" x2="670" y2="210" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4,4" />
 
                 {/* Axis Labels */}
-                <text x="370" y="425" textAnchor="middle" fontSize="11" fontWeight="bold" fill="#4b5563" className="dark:fill-neutral-300">
+                <text x="370" y="425" textAnchor="middle" fontSize="12" fontWeight="800" fill="#0F172A" className="dark:fill-white">
                   {isGunungkidul ? 'Bahaya Meteorologis CHIRPS (H) →' : 'Defisit Presipitasi CHIRPS (H_i) →'}
                 </text>
-                <text x="30" y="210" textAnchor="middle" transform="rotate(-90, 30, 210)" fontSize="11" fontWeight="bold" fill="#4b5563" className="dark:fill-neutral-300">
+                <text x="30" y="210" textAnchor="middle" transform="rotate(-90, 30, 210)" fontSize="12" fontWeight="800" fill="#0F172A" className="dark:fill-white">
                   {isGunungkidul ? 'Sensitivitas Sosial (L1) →' : 'Sensitivitas Gender (S_i) →'}
                 </text>
 
@@ -372,7 +376,7 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
 
                   const cx = 70 + hVal * 600;
                   const cy = 390 - sVal * 360;
-                  const r = 6 + eVal * 12;
+                  const r = 7 + eVal * 14;
                   const color = getCategoryHexColor(item.priority_category, colorTheme);
 
                   return (
@@ -388,19 +392,22 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
                         cy={cy}
                         r={r}
                         fill={color}
-                        fillOpacity="0.8"
-                        stroke="#ffffff"
-                        strokeWidth="1.5"
-                        className="transition-transform group-hover:scale-125 drop-shadow-sm"
+                        fillOpacity="0.9"
+                        stroke="#0F172A"
+                        strokeWidth="2"
+                        className="transition-transform group-hover:scale-125 drop-shadow-md"
                       />
                       <text
                         x={cx}
-                        y={cy - r - 4}
+                        y={cy - r - 6}
                         textAnchor="middle"
-                        fontSize="9"
-                        fontWeight="600"
-                        fill="#1f2937"
-                        className="dark:fill-white select-none pointer-events-none"
+                        fontSize="11"
+                        fontWeight="800"
+                        fill="#0F172A"
+                        stroke="#FFFFFF"
+                        strokeWidth="3"
+                        paintOrder="stroke fill"
+                        className="dark:stroke-[#0F172A] select-none pointer-events-none"
                       >
                         {name}
                       </text>
@@ -415,11 +422,11 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
         {/* CHART 4: Priority Quadrants */}
         {activeChart === 'quadrant' && (
           <div className="space-y-4">
-            <div className="pb-3 border-b border-neutral-200 dark:border-neutral-700">
-              <h3 className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white">
+            <div className="pb-3.5 border-b-2 border-black/[0.08] dark:border-white/[0.12]">
+              <h3 className="text-base sm:text-lg font-extrabold text-[#0F172A] dark:text-white">
                 Partisi Kuadran Prioritas Penyelidikan Lapangan
               </h3>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              <p className="text-xs sm:text-sm text-[#334155] dark:text-[#CBD5E1] font-medium">
                 Pengelompokan unit wilayah berdasarkan kategori urgensi verifikasi dan intervensi program perlindungan iklim.
               </p>
             </div>
@@ -430,34 +437,35 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
                 if (cat === 'Terendah' && itemsInCat.length === 0 && isGunungkidul) return null;
 
                 return (
-                  <div key={cat} className="p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/40 space-y-3">
+                  <div key={cat} className="p-4 rounded-2xl border-2 border-black/[0.08] dark:border-white/[0.12] bg-[#F8FAFC] dark:bg-[#0F172A]/60 space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-xs sm:text-sm text-neutral-900 dark:text-white">
+                      <span className="font-extrabold text-sm text-[#0F172A] dark:text-white">
                         Kategori {cat}
                       </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-black bg-[#0F172A] text-white dark:bg-white dark:text-[#0F172A]">
                         {itemsInCat.length} Unit
                       </span>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-2">
                       {itemsInCat.map(item => {
-                        const name = isGunungkidul ? (item as KapanewonData).kapanewon : (item as SolokKecamatanData).NAMOBJ;
+                        const isItemGK = 'kapanewon' in item;
+                        const name = isItemGK ? (item as KapanewonData).kapanewon : (item as SolokKecamatanData).NAMOBJ;
                         return (
                           <div
                             key={name}
                             onClick={() => onSelectKapanewon(item)}
-                            className="p-2 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-xs flex items-center justify-between cursor-pointer hover:border-emerald-500 transition-colors"
+                            className="p-2.5 rounded-xl bg-white dark:bg-[#1E293B] border border-black/10 dark:border-white/10 text-xs sm:text-sm flex items-center justify-between cursor-pointer hover:border-emerald-500 transition-colors shadow-2xs font-semibold"
                           >
-                            <span className="font-medium text-neutral-800 dark:text-neutral-200">{name}</span>
-                            <span className="font-mono font-bold text-neutral-900 dark:text-white">
-                              {item.SDFVI_proxy.toFixed(4)}
+                            <span className="text-[#0F172A] dark:text-white">{name}</span>
+                            <span className="font-mono font-black text-[#0F172A] dark:text-white">
+                              {item.SDFVI_proxy?.toFixed(4) ?? '-'}
                             </span>
                           </div>
                         );
                       })}
                       {itemsInCat.length === 0 && (
-                        <div className="text-xs text-neutral-400 italic py-2">
+                        <div className="text-xs text-[#64748B] dark:text-[#94A3B8] italic py-2">
                           Tidak ada unit dalam kategori ini
                         </div>
                       )}
@@ -473,49 +481,50 @@ export const ComparisonCharts: React.FC<ComparisonChartsProps> = ({
 
       {/* Accessible Data Table Alternative */}
       {showTableAlternative && (
-        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-5 shadow-xs">
-          <h4 className="font-bold text-sm text-neutral-900 dark:text-white mb-3">
+        <div className="bg-white dark:bg-[#1E293B] border-2 border-black/[0.08] dark:border-white/[0.12] rounded-2xl p-5 sm:p-6 shadow-xs">
+          <h4 className="font-extrabold text-base text-[#0F172A] dark:text-white mb-3">
             Tabel Data Grafik Lengkap (Alternatif Aksesibilitas Pembaca Layar)
           </h4>
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full text-left border-collapse text-xs sm:text-sm">
               <thead>
-                <tr className="border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-700/40 font-semibold text-neutral-600 dark:text-neutral-300">
-                  <th className="py-2 px-3 text-center">Rank</th>
-                  <th className="py-2 px-3">{isGunungkidul ? 'Kapanewon' : 'Kecamatan'}</th>
-                  <th className="py-2 px-3 text-right">Skor SDFVI</th>
-                  <th className="py-2 px-3 text-center">Kategori</th>
+                <tr className="border-b-2 border-black/[0.08] dark:border-white/[0.12] bg-[#F1F5F9] dark:bg-[#0F172A] font-extrabold text-[#0F172A] dark:text-white">
+                  <th className="py-2.5 px-3 text-center">Rank</th>
+                  <th className="py-2.5 px-3">{isGunungkidul ? 'Kapanewon' : 'Kecamatan'}</th>
+                  <th className="py-2.5 px-3 text-right">Skor SDFVI</th>
+                  <th className="py-2.5 px-3 text-center">Kategori</th>
                   {isGunungkidul ? (
                     <>
-                      <th className="py-2 px-3 text-right">L1 (Sensitivitas)</th>
-                      <th className="py-2 px-3 text-right">H (Bahaya CHIRPS)</th>
-                      <th className="py-2 px-3 text-right">F_area (Defisit Luas)</th>
+                      <th className="py-2.5 px-3 text-right">L1 (Sensitivitas)</th>
+                      <th className="py-2.5 px-3 text-right">H (Bahaya CHIRPS)</th>
+                      <th className="py-2.5 px-3 text-right">F_area (Defisit Luas)</th>
                     </>
                   ) : (
                     <>
-                      <th className="py-2 px-3 text-right">S_i (Gender 60+)</th>
-                      <th className="py-2 px-3 text-right">H_i (CHIRPS 2023)</th>
-                      <th className="py-2 px-3 text-right">E_i (Sawah Total ha)</th>
+                      <th className="py-2.5 px-3 text-right">S_i (Gender 60+)</th>
+                      <th className="py-2.5 px-3 text-right">H_i (CHIRPS 2023)</th>
+                      <th className="py-2.5 px-3 text-right">E_i (Sawah Total ha)</th>
                     </>
                   )}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-100 dark:divide-neutral-700/60">
+              <tbody className="divide-y divide-black/[0.06] dark:divide-white/[0.08]">
                 {activeSortedList.map(item => {
-                  const name = isGunungkidul ? (item as KapanewonData).kapanewon : (item as SolokKecamatanData).NAMOBJ;
-                  const c1 = isGunungkidul ? (item as KapanewonData).L1_social_sensitivity : (item as SolokKecamatanData).S_i;
-                  const c2 = isGunungkidul ? (item as KapanewonData).H_meteorological_hazard : (item as SolokKecamatanData).H_i;
-                  const c3 = isGunungkidul ? (item as KapanewonData).F_area_land_deficit_proxy : (item as SolokKecamatanData).E_i;
+                  const isItemGK = 'kapanewon' in item;
+                  const name = isItemGK ? (item as KapanewonData).kapanewon : (item as SolokKecamatanData).NAMOBJ;
+                  const c1 = Number((isItemGK ? (item as KapanewonData).L1_social_sensitivity : (item as SolokKecamatanData).S_i) ?? 0);
+                  const c2 = Number((isItemGK ? (item as KapanewonData).H_meteorological_hazard : (item as SolokKecamatanData).H_i) ?? 0);
+                  const c3 = Number((isItemGK ? (item as KapanewonData).F_area_land_deficit_proxy : (item as SolokKecamatanData).E_i) ?? 0);
 
                   return (
                     <tr key={name} className="hover:bg-neutral-50 dark:hover:bg-neutral-700/30">
-                      <td className="py-2 px-3 text-center font-bold">#{item.rank}</td>
-                      <td className="py-2 px-3 font-semibold">{name}</td>
-                      <td className="py-2 px-3 text-right font-mono font-bold">{item.SDFVI_proxy.toFixed(4)}</td>
-                      <td className="py-2 px-3 text-center">{item.priority_category}</td>
-                      <td className="py-2 px-3 text-right font-mono">{c1.toFixed(4)}</td>
-                      <td className="py-2 px-3 text-right font-mono">{c2.toFixed(4)}</td>
-                      <td className="py-2 px-3 text-right font-mono">{c3.toFixed(4)}</td>
+                      <td className="py-2.5 px-3 text-center font-black text-[#0F172A] dark:text-white">#{item.rank ?? '-'}</td>
+                      <td className="py-2.5 px-3 font-bold text-[#0F172A] dark:text-white">{name}</td>
+                      <td className="py-2.5 px-3 text-right font-mono font-black text-[#0F172A] dark:text-white">{item.SDFVI_proxy?.toFixed(4) ?? '-'}</td>
+                      <td className="py-2.5 px-3 text-center font-bold">{item.priority_category ?? '-'}</td>
+                      <td className="py-2.5 px-3 text-right font-mono text-[#334155] dark:text-[#CBD5E1] font-semibold">{c1.toFixed(4)}</td>
+                      <td className="py-2.5 px-3 text-right font-mono text-[#334155] dark:text-[#CBD5E1] font-semibold">{c2.toFixed(4)}</td>
+                      <td className="py-2.5 px-3 text-right font-mono text-[#334155] dark:text-[#CBD5E1] font-semibold">{c3.toFixed(4)}</td>
                     </tr>
                   );
                 })}

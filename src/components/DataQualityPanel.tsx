@@ -842,7 +842,7 @@ export const DataQualityPanel: React.FC<DataQualityPanelProps> = ({
                   Dinas Sosial DIY & Gunungkidul
                 </h4>
                 <p className="text-xs text-neutral-600 dark:text-neutral-400">
-                  Data Anak Dalam Masalah Kesejahteraan Sosial (ADK) 2024 dan Lansia Terlantar 2023. 
+                  Data Anak Dengan Kedisabilitasan (ADK) 2024 dan Lansia Terlantar 2023. 
                   Dibagi dengan proyeksi populasi BPS 2024 per 1.000 jiwa.
                 </p>
                 <div className="text-[11px] text-neutral-500 pt-2 border-t border-neutral-200 dark:border-neutral-600 font-mono">

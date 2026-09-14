@@ -40,11 +40,13 @@ export const BiocharSensitivityPanel: React.FC<BiocharSensitivityPanelProps> = (
   // Custom calculated value based on slider
   const customCalculatedMm = useMemo(() => {
     // 25% corresponds to deltaMmOptimistis
-    return ((selectedData.deltaMmOptimistis / 25) * customWHC).toFixed(2);
+    const mm = selectedData?.deltaMmOptimistis ?? 0;
+    return ((mm / 25) * customWHC).toFixed(2);
   }, [selectedData, customWHC]);
 
   const customCalculatedML = useMemo(() => {
-    return ((selectedData.equivalentVolumeML / 25) * customWHC).toFixed(1);
+    const ml = selectedData?.equivalentVolumeML ?? 0;
+    return ((ml / 25) * customWHC).toFixed(1);
   }, [selectedData, customWHC]);
 
   return (
@@ -217,7 +219,7 @@ export const BiocharSensitivityPanel: React.FC<BiocharSensitivityPanelProps> = (
                         fill={isSelected ? "#ffffff" : isHotspot ? "#f472b6" : "#a5f3fc"}
                         className="pointer-events-none select-none drop-shadow"
                       >
-                        {d.kapanewon} ({d.deltaMmOptimistis.toFixed(1)})
+                        {d.kapanewon} ({(d.deltaMmOptimistis ?? 0).toFixed(1)})
                       </text>
                     </g>
                   );
@@ -346,7 +348,7 @@ export const BiocharSensitivityPanel: React.FC<BiocharSensitivityPanelProps> = (
                     </div>
 
                     <span className="w-16 text-xs font-mono font-semibold text-slate-900 text-right">
-                      {item.equivalentVolumeML.toFixed(1)} ML
+                      {(item.equivalentVolumeML ?? 0).toFixed(1)} ML
                     </span>
                   </div>
                 );

@@ -692,7 +692,7 @@ export const CONTEXTUAL_CHARACTERIZATION_DATA: Record<string, ContextualData> = 
 
 export const FIELD_VERIFICATION_PROMPTS: Record<string, string[]> = {
   "Wonosari": [
-    "Verifikasi pendaftaran dan pemutakhiran data ADK/disabilitas di kawasan padat perkotaan kalurahan.",
+    "Verifikasi pendaftaran dan pemutakhiran data ADK (Anak Dengan Kedisabilitasan) di kawasan padat perkotaan kalurahan.",
     "Tinjau apakah rute armada dropping tangki air menjangkau permukiman disabilitas di pinggiran ibu kota kabupaten.",
     "Periksa ketersediaan subsidi air PDAM bagi keluarga berpenghasilan rendah dengan anggota disabilitas berat."
   ],

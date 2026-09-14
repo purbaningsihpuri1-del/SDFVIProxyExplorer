@@ -114,20 +114,20 @@ export const ContextualTable: React.FC<ContextualTableProps> = ({
   return (
     <div className="space-y-6" id="contextual-table-container">
       {/* Header & Controls */}
-      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-5 shadow-xs">
+      <div className="bg-white dark:bg-[#1E293B] border-2 border-black/[0.08] dark:border-white/[0.12] rounded-2xl p-5 sm:p-6 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+            <div className="flex items-center gap-2.5">
+              <span className="p-2 rounded-xl bg-[#15803D]/15 dark:bg-[#15803D]/30 text-[#14532D] dark:text-[#4ADE80]">
                 <Compass className="w-5 h-5" />
               </span>
-              <h2 className="text-base sm:text-lg font-bold text-neutral-900 dark:text-white">
+              <h2 className="text-lg sm:text-xl font-extrabold text-[#0F172A] dark:text-white tracking-tight">
                 {isGunungkidul
                   ? 'Tabel Karakterisasi Kontekstual 18 Kapanewon Gunungkidul'
                   : 'Tabel Karakterisasi Kontekstual 14 Kecamatan Kabupaten Solok'}
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+            <p className="text-xs sm:text-sm text-[#334155] dark:text-[#CBD5E1] mt-1.5 font-medium leading-relaxed">
               {isGunungkidul
                 ? 'Integrasi tipologi bentang alam karst (Zona Selatan/Tengah/Utara), spesialisasi palawija, dan sumber air.'
                 : 'Integrasi lansia gender, sentra padi sawah beras Solok (Anak Daro/Cisokan), elevasi danau kembar/pegunungan, dan sub-DAS.'}
@@ -136,19 +136,19 @@ export const ContextualTable: React.FC<ContextualTableProps> = ({
 
           {/* Quick Pilot Switcher */}
           {onSwitchPilot && (
-            <div className="flex items-center bg-neutral-100 dark:bg-neutral-700 p-1 rounded-lg text-xs font-semibold">
+            <div className="flex items-center bg-[#F1F5F9] dark:bg-[#0F172A] p-1 rounded-xl border border-black/10 dark:border-white/10 text-xs sm:text-sm font-bold">
               <button
                 onClick={() => onSwitchPilot('gunungkidul')}
-                className={`px-3 py-1.5 rounded transition-colors ${
-                  isGunungkidul ? 'bg-emerald-600 text-white shadow-xs' : 'text-neutral-600 dark:text-neutral-300'
+                className={`px-3 py-1.5 rounded-lg transition-colors ${
+                  isGunungkidul ? 'bg-[#15803D] text-white shadow-xs' : 'text-[#334155] dark:text-[#CBD5E1] hover:text-black dark:hover:text-white'
                 }`}
               >
                 Gunungkidul
               </button>
               <button
                 onClick={() => onSwitchPilot('solok')}
-                className={`px-3 py-1.5 rounded transition-colors ${
-                  !isGunungkidul ? 'bg-blue-600 text-white shadow-xs' : 'text-neutral-600 dark:text-neutral-300'
+                className={`px-3 py-1.5 rounded-lg transition-colors ${
+                  !isGunungkidul ? 'bg-[#0055D4] text-white shadow-xs' : 'text-[#334155] dark:text-[#CBD5E1] hover:text-black dark:hover:text-white'
                 }`}
               >
                 Solok
@@ -158,25 +158,25 @@ export const ContextualTable: React.FC<ContextualTableProps> = ({
         </div>
 
         {/* Filter Bar */}
-        <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700 flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+        <div className="mt-4 pt-4 border-t-2 border-black/[0.08] dark:border-white/[0.12] flex flex-wrap items-center gap-3">
+          <div className="relative flex-1 min-w-[220px]">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#475569] dark:text-[#94A3B8]" />
             <input
               type="text"
               placeholder={isGunungkidul ? "Cari nama kapanewon atau konteks..." : "Cari nama kecamatan atau konteks..."}
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white"
+              className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl border-2 border-black/15 dark:border-white/20 bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white font-medium focus:outline-hidden focus:border-[#15803D]"
             />
           </div>
 
           {/* Zone Filter */}
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-neutral-500 font-medium">Zona:</span>
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm">
+            <span className="text-[#334155] dark:text-[#CBD5E1] font-bold">Zona:</span>
             <select
               value={zoneFilter}
               onChange={e => setZoneFilter(e.target.value)}
-              className="py-1.5 px-2 rounded-lg border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-xs"
+              className="py-2 px-2.5 rounded-xl border-2 border-black/15 dark:border-white/20 bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white text-xs sm:text-sm font-semibold"
             >
               <option value="all">Semua Zona</option>
               {uniqueZones.map(z => (
@@ -186,12 +186,12 @@ export const ContextualTable: React.FC<ContextualTableProps> = ({
           </div>
 
           {/* Economic Filter */}
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-neutral-500 font-medium">Ekonomi:</span>
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm">
+            <span className="text-[#334155] dark:text-[#CBD5E1] font-bold">Ekonomi:</span>
             <select
               value={econFilter}
               onChange={e => setEconFilter(e.target.value)}
-              className="py-1.5 px-2 rounded-lg border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-xs"
+              className="py-2 px-2.5 rounded-xl border-2 border-black/15 dark:border-white/20 bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white text-xs sm:text-sm font-semibold"
             >
               <option value="all">Semua Spesialisasi</option>
               {uniqueEcons.map(ec => (
@@ -201,12 +201,12 @@ export const ContextualTable: React.FC<ContextualTableProps> = ({
           </div>
 
           {/* Hazard Filter */}
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-neutral-500 font-medium">Bahaya:</span>
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm">
+            <span className="text-[#334155] dark:text-[#CBD5E1] font-bold">Bahaya:</span>
             <select
               value={hazardFilter}
               onChange={e => setHazardFilter(e.target.value)}
-              className="py-1.5 px-2 rounded-lg border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-xs"
+              className="py-2 px-2.5 rounded-xl border-2 border-black/15 dark:border-white/20 bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white text-xs sm:text-sm font-semibold"
             >
               <option value="all">Semua Profil Bahaya</option>
               {uniqueHazards.map(hz => (
@@ -218,30 +218,30 @@ export const ContextualTable: React.FC<ContextualTableProps> = ({
       </div>
 
       {/* Main Table */}
-      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl overflow-hidden shadow-xs">
+      <div className="bg-white dark:bg-[#1E293B] border-2 border-black/[0.08] dark:border-white/[0.12] rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
-              <tr className="border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-700/40 font-semibold text-neutral-600 dark:text-neutral-300">
-                <th className="py-3 px-3 w-14 text-center">Rank</th>
+              <tr className="border-b-2 border-black/[0.08] dark:border-white/[0.12] bg-[#F1F5F9] dark:bg-[#0F172A] font-extrabold text-[#0F172A] dark:text-white">
+                <th className="py-3 px-3 w-16 text-center">Rank</th>
                 <th className="py-3 px-4">{isGunungkidul ? 'Kapanewon' : 'Kecamatan'}</th>
                 <th className="py-3 px-3 text-right">SDFVI</th>
                 <th className="py-3 px-3 text-center">Prioritas</th>
                 <th className="py-3 px-4">Zona Geografis & Tipologi</th>
                 <th className="py-3 px-4">Spesialisasi Ekonomi Agraris</th>
                 <th className="py-3 px-4">Karakteristik Sumber Air & Bahaya</th>
-                <th className="py-3 px-3 text-center w-20">Aksi</th>
+                <th className="py-3 px-3 text-center w-24">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100 dark:divide-neutral-700/60">
+            <tbody className="divide-y divide-black/[0.06] dark:divide-white/[0.08]">
               {filtered.map(item => {
                 const badgeClass = getCategoryBadgeClasses(item.priority_category, colorTheme);
                 return (
                   <tr key={item.name} className="hover:bg-neutral-50/80 dark:hover:bg-neutral-700/30 transition-colors">
-                    <td className="py-3 px-3 text-center font-bold text-neutral-700 dark:text-neutral-300">
+                    <td className="py-3 px-3 text-center font-black text-[#0F172A] dark:text-white">
                       #{item.rank}
                     </td>
-                    <td className="py-3 px-4 font-semibold text-neutral-900 dark:text-white whitespace-nowrap">
+                    <td className="py-3 px-4 font-bold text-[#0F172A] dark:text-white whitespace-nowrap">
                       <button
                         onClick={() => onSelectKapanewon(item)}
                         className="hover:underline text-left focus:outline-hidden"
@@ -249,33 +249,33 @@ export const ContextualTable: React.FC<ContextualTableProps> = ({
                         {item.name}
                       </button>
                     </td>
-                    <td className="py-3 px-3 text-right font-mono font-bold text-neutral-900 dark:text-white">
-                      {item.SDFVI_proxy.toFixed(4)}
+                    <td className="py-3 px-3 text-right font-mono font-black text-[#0F172A] dark:text-white">
+                      {item.SDFVI_proxy?.toFixed(4) ?? '-'}
                     </td>
                     <td className="py-3 px-3 text-center">
-                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${badgeClass}`}>
+                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${badgeClass}`}>
                         {item.priority_category}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-xs text-neutral-700 dark:text-neutral-300 max-w-xs">
-                      <div className="font-semibold text-neutral-900 dark:text-white">{item.context.geographic_zone}</div>
-                      <div className="text-[11px] text-neutral-500 mt-0.5">{item.context.geographic_zone_detail}</div>
+                    <td className="py-3 px-4 text-xs sm:text-sm max-w-xs">
+                      <div className="font-bold text-[#0F172A] dark:text-white">{item.context.geographic_zone}</div>
+                      <div className="text-xs text-[#334155] dark:text-[#CBD5E1] mt-0.5 font-medium">{item.context.geographic_zone_detail}</div>
                     </td>
-                    <td className="py-3 px-4 text-xs text-neutral-700 dark:text-neutral-300 max-w-xs">
-                      <div className="font-semibold text-neutral-900 dark:text-white">{item.context.economic_specialization}</div>
-                      <div className="text-[11px] text-neutral-500 mt-0.5">{item.context.economic_detail}</div>
+                    <td className="py-3 px-4 text-xs sm:text-sm max-w-xs">
+                      <div className="font-bold text-[#0F172A] dark:text-white">{item.context.economic_specialization}</div>
+                      <div className="text-xs text-[#334155] dark:text-[#CBD5E1] mt-0.5 font-medium">{item.context.economic_detail}</div>
                     </td>
-                    <td className="py-3 px-4 text-xs text-neutral-700 dark:text-neutral-300 max-w-xs">
-                      <div className="font-semibold text-neutral-900 dark:text-white">{item.context.dominant_hazard}</div>
-                      <div className="text-[11px] text-neutral-500 mt-0.5">{item.context.water_source_context}</div>
+                    <td className="py-3 px-4 text-xs sm:text-sm max-w-xs">
+                      <div className="font-bold text-[#0F172A] dark:text-white">{item.context.dominant_hazard}</div>
+                      <div className="text-xs text-[#334155] dark:text-[#CBD5E1] mt-0.5 font-medium">{item.context.water_source_context}</div>
                     </td>
                     <td className="py-3 px-3 text-center">
                       <button
                         onClick={() => onSelectKapanewon(item)}
-                        className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold hover:underline inline-flex items-center gap-0.5"
+                        className="text-xs sm:text-sm text-[#15803D] dark:text-[#4ADE80] font-extrabold hover:underline inline-flex items-center gap-0.5"
                       >
                         <span>Profil</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
+                        <ChevronRight className="w-4 h-4" />
                       </button>
                     </td>
                   </tr>

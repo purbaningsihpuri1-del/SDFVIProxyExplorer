@@ -64,46 +64,69 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 shadow-xs">
+    <header className="sticky top-0 z-30 apple-glass border-b border-black/[0.06] dark:border-white/[0.08] transition-all">
       {/* Top Header Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
           
-          {/* Brand & Subtitle */}
-          <div>
-            <div className="flex items-center gap-2.5">
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-xs tracking-wider shadow-xs">
+          {/* Brand & Subtitle (Apple Typography & High Contrast Badge) */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0055D4] to-[#003882] text-white flex items-center justify-center font-extrabold text-sm tracking-wider shadow-sm shrink-0 apple-tap">
                 SDFVI
-              </span>
-              <h1 className="text-lg sm:text-xl font-bold text-neutral-900 dark:text-neutral-50 tracking-tight">
-                SDFVI–Proxy Explorer — Dual Pilot: Gunungkidul & Solok
-              </h1>
+              </div>
+              <div>
+                <div className="flex items-center gap-2.5">
+                  <h1 className="text-lg sm:text-xl font-extrabold text-[#0F172A] dark:text-white tracking-tight leading-none">
+                    SDFVI–Proxy Explorer
+                  </h1>
+                  <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#15803D]/15 text-[#14532D] dark:text-[#4ADE80] border border-[#15803D]/30">
+                    Dual Pilot v2026
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-[#334155] dark:text-[#CBD5E1] mt-0.5 flex items-center gap-1.5 font-medium truncate max-w-xs sm:max-w-md md:max-w-xl">
+                  <span>Inklusif Disabilitas & Responsif Gender (DICLIV Adaptation)</span>
+                </p>
+              </div>
             </div>
-            <p className="subtitle text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-0.5 flex flex-wrap items-center gap-1.5">
-              <span>Indonesia's first disability-inclusive AND gender-responsive climate vulnerability dashboard, adapted from the global DICLIV framework (Chile, 2026).</span>
-              <span className="text-neutral-400">•</span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
-                {dataSourceLabel}
-              </span>
-            </p>
+
+            {/* Mobile-only Pilot Switcher for immediate thumb reach */}
+            <div className="md:hidden flex items-center bg-[#E2E8F0] dark:bg-[#27272A] p-1 rounded-full border border-black/10 dark:border-white/10">
+              <button
+                onClick={() => setCurrentPilot('gunungkidul')}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  currentPilot === 'gunungkidul'
+                    ? 'bg-[#0F172A] dark:bg-white text-white dark:text-[#0F172A] shadow-xs'
+                    : 'text-[#334155] dark:text-[#CBD5E1]'
+                }`}
+              >
+                Gunungkidul
+              </button>
+              <button
+                onClick={() => setCurrentPilot('solok')}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  currentPilot === 'solok'
+                    ? 'bg-[#0F172A] dark:bg-white text-white dark:text-[#0F172A] shadow-xs'
+                    : 'text-[#334155] dark:text-[#CBD5E1]'
+                }`}
+              >
+                Solok
+              </button>
+            </div>
           </div>
 
-          {/* Pilot Selector & Action Toolbar */}
-          <div className="flex flex-wrap items-center gap-2.5">
+          {/* Desktop Pilot Selector & Action Toolbar */}
+          <div className="hidden md:flex flex-wrap items-center gap-2.5">
             
-            {/* DUAL PILOT DROPDOWN TOGGLE */}
-            <div className="flex items-center bg-emerald-50 dark:bg-emerald-950/40 p-1 rounded-xl border border-emerald-300 dark:border-emerald-800 shadow-xs">
-              <span className="text-emerald-800 dark:text-emerald-300 px-2 text-xs font-semibold flex items-center gap-1">
-                <Compass className="w-3.5 h-3.5" /> Pilot:
-              </span>
-              
+            {/* Apple HIG Segmented Control for Dual Pilot */}
+            <div className="flex items-center bg-[#E2E8F0] dark:bg-[#27272A] p-1 rounded-full border border-black/10 dark:border-white/10 shadow-2xs">
               <button
                 id="btn-pilot-gunungkidul"
                 onClick={() => setCurrentPilot('gunungkidul')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all apple-tap ${
                   currentPilot === 'gunungkidul'
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-emerald-900 dark:text-emerald-200 hover:bg-emerald-100 dark:hover:bg-emerald-900/40'
+                    ? 'bg-[#0F172A] dark:bg-white text-white dark:text-[#0F172A] shadow-xs'
+                    : 'text-[#334155] dark:text-[#CBD5E1] hover:text-[#0F172A] dark:hover:text-white'
                 }`}
                 title="Gunungkidul (18 Kapanewon) - Disabilitas & Lansia, Karst Kekeringan"
               >
@@ -113,10 +136,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 id="btn-pilot-solok"
                 onClick={() => setCurrentPilot('solok')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all apple-tap ${
                   currentPilot === 'solok'
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-emerald-900 dark:text-emerald-200 hover:bg-emerald-100 dark:hover:bg-emerald-900/40'
+                    ? 'bg-[#0F172A] dark:bg-white text-white dark:text-[#0F172A] shadow-xs'
+                    : 'text-[#334155] dark:text-[#CBD5E1] hover:text-[#0F172A] dark:hover:text-white'
                 }`}
                 title="Solok (14 Kecamatan) - Responsif Gender, Sawah Anak Daro"
               >
@@ -124,18 +147,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
 
-            {/* Color Palette Selector */}
-            <div className="hidden sm:flex items-center gap-1 bg-neutral-100 dark:bg-neutral-800 p-1 rounded-lg border border-neutral-200 dark:border-neutral-700 text-xs">
-              <span className="text-neutral-500 dark:text-neutral-400 pl-1.5 pr-0.5 flex items-center gap-1 font-medium text-[11px]">
-                <Eye className="w-3 h-3" /> Tema:
-              </span>
+            {/* Apple Color Palette Selector */}
+            <div className="flex items-center gap-0.5 bg-[#E2E8F0] dark:bg-[#27272A] p-1 rounded-full border border-black/10 dark:border-white/10 text-xs">
               <button
                 id="btn-theme-standard"
                 onClick={() => setColorTheme('standard')}
-                className={`px-2 py-1 rounded text-xs transition-colors ${
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
                   colorTheme === 'standard'
-                    ? 'bg-white dark:bg-neutral-700 font-semibold shadow-xs text-neutral-900 dark:text-neutral-100'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900'
+                    ? 'bg-[#0F172A] dark:bg-white font-bold shadow-xs text-white dark:text-[#0F172A]'
+                    : 'text-[#334155] dark:text-[#CBD5E1] hover:text-[#0F172A]'
                 }`}
               >
                 Standar
@@ -143,63 +163,63 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 id="btn-theme-colorblind"
                 onClick={() => setColorTheme('colorblind')}
-                className={`px-2 py-1 rounded text-xs transition-colors ${
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
                   colorTheme === 'colorblind'
-                    ? 'bg-white dark:bg-neutral-700 font-semibold shadow-xs text-sky-800 dark:text-sky-300'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900'
+                    ? 'bg-[#0055D4] text-white font-bold shadow-xs'
+                    : 'text-[#334155] dark:text-[#CBD5E1] hover:text-[#0F172A]'
                 }`}
               >
-                Buta Warna
+                Inklusif
               </button>
               <button
                 id="btn-theme-high-contrast"
                 onClick={() => setColorTheme('high-contrast')}
-                className={`px-2 py-1 rounded text-xs transition-colors ${
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
                   colorTheme === 'high-contrast'
-                    ? 'bg-white dark:bg-neutral-700 font-bold shadow-xs text-black dark:text-white'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900'
+                    ? 'bg-black dark:bg-white font-extrabold shadow-xs text-white dark:text-black border border-white dark:border-black'
+                    : 'text-[#334155] dark:text-[#CBD5E1] hover:text-[#0F172A]'
                 }`}
               >
                 Kontras
               </button>
             </div>
 
-            {/* CSV Download & Upload */}
-            <div className="flex items-center gap-1.5">
+            {/* CSV Actions with Apple pill aesthetics & WCAG Contrast */}
+            <div className="flex items-center gap-2">
               <button
                 id="btn-download-csv"
                 onClick={onDownloadCSV}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 border border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-bold bg-white dark:bg-[#27272A] text-[#0F172A] dark:text-white border-2 border-black/15 dark:border-white/20 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all shadow-2xs apple-tap"
                 title={`Unduh dataset ${currentPilot === 'gunungkidul' ? 'gn_kidul_sdfvi_data.csv' : 'solok_sdfvi_data.csv'}`}
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>Unduh CSV</span>
+                <Download className="w-4 h-4 text-[#0055D4] dark:text-[#60A5FA]" />
+                <span>Ekspor CSV</span>
               </button>
 
               <button
                 id="btn-upload-csv"
                 onClick={onOpenUploadModal}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 rounded-lg hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-bold bg-[#0055D4] text-white rounded-full hover:bg-[#00409A] transition-all shadow-2xs apple-tap border border-[#003882]"
                 title="Unggah berkas CSV kustom"
               >
-                <Upload className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Unggah</span>
+                <Upload className="w-4 h-4" />
+                <span>Unggah</span>
               </button>
 
               <button
                 id="btn-share-dashboard"
                 onClick={onShare}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium bg-slate-100 dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 border border-slate-200 dark:border-neutral-700 rounded-lg hover:bg-slate-200 transition-colors shadow-xs"
+                className="inline-flex items-center justify-center w-9 h-9 text-sm font-bold bg-white dark:bg-[#27272A] text-[#0F172A] dark:text-white border-2 border-black/15 dark:border-white/20 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all shadow-2xs apple-tap"
                 title="Bagikan dashboard"
               >
-                <Share2 className="w-3.5 h-3.5" />
+                <Share2 className="w-4 h-4 text-[#0F172A] dark:text-white" />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Primary Navigation Tabs */}
-        <nav className="flex space-x-1 sm:space-x-1.5 overflow-x-auto pt-2.5 pb-1 border-t border-neutral-200/60 dark:border-neutral-800/60 mt-2.5 scrollbar-none" aria-label="Navigasi Utama">
+        {/* Primary Navigation Tabs - Apple Segmented Bar with Larger Accessible Fonts */}
+        <nav className="flex space-x-1.5 overflow-x-auto pt-2.5 pb-1 mt-1 border-t border-black/[0.08] dark:border-white/[0.1] no-scrollbar scroll-smooth" aria-label="Navigasi Utama">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -208,13 +228,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={tab.id}
                 id={`tab-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg whitespace-nowrap transition-all ${
+                className={`flex items-center gap-2 px-3.5 py-2 text-sm font-bold rounded-full whitespace-nowrap transition-all apple-tap ${
                   isActive
-                    ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-xs font-semibold'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                    ? 'bg-[#0F172A] dark:bg-white text-white dark:text-[#0F172A] shadow-xs'
+                    : 'text-[#334155] dark:text-[#CBD5E1] hover:text-[#0F172A] dark:hover:text-white hover:bg-black/[0.06] dark:hover:bg-white/[0.1]'
                 }`}
               >
-                <Icon className="w-4 h-4 shrink-0" />
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? (isActive ? 'text-white dark:text-[#0F172A]' : '') : 'text-[#475569] dark:text-[#94A3B8]'}`} />
                 <span>{tab.label}</span>
               </button>
             );

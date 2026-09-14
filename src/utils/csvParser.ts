@@ -240,28 +240,28 @@ export function exportDataToCSV(data: KapanewonData[]): string {
 
   const rows = data.map(d => [
     escapeCSV(d.kapanewon),
-    d.rank,
-    escapeCSV(d.priority_category),
-    d.SDFVI_proxy.toFixed(4),
-    d.L1_social_sensitivity.toFixed(4),
-    d.H_meteorological_hazard.toFixed(4),
-    d.F_area_land_deficit_proxy.toFixed(4),
-    d.population_2024,
-    d.ADK_2024,
-    d.neglected_older_persons_2023,
-    d.ADK_per_1000.toFixed(3),
-    d.neglected_older_persons_per_1000.toFixed(3),
-    d.normalized_ADK_score.toFixed(4),
-    d.normalized_older_person_score.toFixed(4),
-    d.precipitation_2015.toFixed(1),
-    d.precipitation_2016_reference.toFixed(1),
-    d.precipitation_2019.toFixed(1),
-    d.precipitation_2024.toFixed(1),
-    d.mean_precipitation_benchmark.toFixed(2),
-    d.maize_harvest_area_2023,
-    d.cassava_harvest_area_2023,
-    d.combined_harvest_area,
-    d.harvest_area_per_1000_population.toFixed(3)
+    d.rank ?? '',
+    escapeCSV(d.priority_category ?? ''),
+    d.SDFVI_proxy !== undefined ? d.SDFVI_proxy.toFixed(4) : '',
+    d.L1_social_sensitivity !== undefined ? d.L1_social_sensitivity.toFixed(4) : '',
+    d.H_meteorological_hazard !== undefined ? d.H_meteorological_hazard.toFixed(4) : '',
+    d.F_area_land_deficit_proxy !== undefined ? d.F_area_land_deficit_proxy.toFixed(4) : '',
+    d.population_2024 ?? '',
+    d.ADK_2024 ?? '',
+    d.neglected_older_persons_2023 ?? '',
+    d.ADK_per_1000 !== undefined ? d.ADK_per_1000.toFixed(3) : '',
+    d.neglected_older_persons_per_1000 !== undefined ? d.neglected_older_persons_per_1000.toFixed(3) : '',
+    d.normalized_ADK_score !== undefined ? d.normalized_ADK_score.toFixed(4) : '',
+    d.normalized_older_person_score !== undefined ? d.normalized_older_person_score.toFixed(4) : '',
+    d.precipitation_2015 !== undefined ? d.precipitation_2015.toFixed(1) : '',
+    d.precipitation_2016_reference !== undefined ? d.precipitation_2016_reference.toFixed(1) : '',
+    d.precipitation_2019 !== undefined ? d.precipitation_2019.toFixed(1) : '',
+    d.precipitation_2024 !== undefined ? d.precipitation_2024.toFixed(1) : '',
+    d.mean_precipitation_benchmark !== undefined ? d.mean_precipitation_benchmark.toFixed(2) : '',
+    d.maize_harvest_area_2023 ?? '',
+    d.cassava_harvest_area_2023 ?? '',
+    d.combined_harvest_area ?? '',
+    d.harvest_area_per_1000_population !== undefined ? d.harvest_area_per_1000_population.toFixed(3) : ''
   ].join(','));
 
   return [headers.join(','), ...rows].join('\n');
@@ -318,19 +318,19 @@ export function exportSolokDataToCsv(solokData: any[], filename: string = 'solok
   ];
 
   const rows = solokData.map(d => [
-    d.rank,
+    d.rank ?? '',
     `"${d.NAMOBJ}"`,
-    d.SDFVI_proxy.toFixed(4),
-    `"${d.priority_category}"`,
-    d.S_i.toFixed(4),
-    d.H_i.toFixed(4),
-    d.E_i.toFixed(4),
-    d.chirps_total_mm.toFixed(2),
-    d.sawah_total_ha.toFixed(2),
-    d.women_60plus_no_edu,
-    d.elevation_masl,
-    `"${d.dominant_rice_variety}"`,
-    `"${d.sub_basin}"`
+    d.SDFVI_proxy !== undefined ? d.SDFVI_proxy.toFixed(4) : '',
+    `"${d.priority_category ?? ''}"`,
+    d.S_i !== undefined ? d.S_i.toFixed(4) : '',
+    d.H_i !== undefined ? d.H_i.toFixed(4) : '',
+    d.E_i !== undefined ? d.E_i.toFixed(4) : '',
+    d.chirps_total_mm !== undefined ? d.chirps_total_mm.toFixed(2) : '',
+    d.sawah_total_ha !== undefined ? d.sawah_total_ha.toFixed(2) : '',
+    d.women_60plus_no_edu ?? '',
+    d.elevation_masl ?? '',
+    `"${d.dominant_rice_variety ?? ''}"`,
+    `"${d.sub_basin ?? ''}"`
   ].join(','));
 
   const csvContent = [headers.join(','), ...rows].join('\n');

@@ -1,5 +1,124 @@
 @import "tailwindcss";
 
-.subtitle {
-  @apply text-neutral-600 dark:text-neutral-300 font-medium;
+@layer base {
+  :root {
+    --apple-system-bg: #F4F4F6;
+    --apple-grouped-bg: #EAEAEF;
+    --apple-card-bg: #FFFFFF;
+    --apple-blue: #0055D4;
+    --apple-blue-dark: #00409A;
+    --apple-green: #15803D;
+    --apple-orange: #C2410C;
+    --apple-red: #B91C1C;
+    --apple-purple: #7E22CE;
+    --apple-indigo: #4338CA;
+    --apple-teal: #0F766E;
+  }
+
+  html {
+    font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    color-scheme: light dark;
+  }
+
+  body {
+    background-color: #F4F4F7;
+    color: #111827;
+    font-size: 1rem;
+    line-height: 1.6;
+    letter-spacing: -0.011em;
+    overscroll-behavior-y: none;
+  }
+
+  .dark body {
+    background-color: #000000;
+    color: #F9FAFB;
+  }
+
+  /* Accessible text contrast rules complying with WCAG AA/AAA */
+  h1, h2, h3, h4, h5, h6 {
+    color: #0F172A;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: #FFFFFF;
+  }
+
+  p, span, div, label {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Support for iOS Dynamic Island & Notched screens */
+  .pb-safe {
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+  }
+  .pt-safe {
+    padding-top: max(1.25rem, env(safe-area-inset-top, 0px));
+  }
 }
+
+.subtitle {
+  color: #374151;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.dark .subtitle {
+  color: #E5E7EB;
+}
+
+/* Apple HIG Glassmorphism & Surface utilities with high contrast borders */
+.apple-glass {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+}
+
+.dark .apple-glass {
+  background: rgba(24, 24, 27, 0.94);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.apple-card {
+  background: #FFFFFF;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .apple-card {
+  background: #18181B;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Apple-style smooth touch response */
+.apple-tap {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.15s ease;
+}
+.apple-tap:active {
+  transform: scale(0.97);
+  opacity: 0.92;
+}
+
+/* Hide scrollbar for iOS-style horizontal swipe bars while preserving touch scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+

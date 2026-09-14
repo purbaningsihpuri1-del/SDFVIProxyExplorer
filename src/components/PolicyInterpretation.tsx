@@ -117,7 +117,7 @@ export const PolicyInterpretation: React.FC = () => {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-emerald-600 font-bold">✓</span>
-              <span>Mengintegrasikan data ADK dan lansia terlantar ke dalam sistem peringatan dini kekeringan tingkat kabupaten.</span>
+              <span>Mengintegrasikan data ADK (Anak Dengan Kedisabilitasan) dan lansia terlantar ke dalam sistem peringatan dini kekeringan tingkat kabupaten.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-emerald-600 font-bold">✓</span>
